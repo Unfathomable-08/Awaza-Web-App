@@ -3,10 +3,13 @@ import { AuthProvider, useAuth } from './contexts/authContext';
 import AccountSetting from './pages/AccountSetting';
 import Chat from './pages/Chat';
 import CheckEmail from './pages/CheckEmail';
+import CommentDetails from './pages/CommentDetails';
 import ComposePost from './pages/ComposePost';
 import Home from './pages/Home';
 import Inbox from './pages/Inbox';
 import Login from './pages/Login';
+import PostDetails from './pages/PostDetails';
+import Profile from './pages/Profile';
 import Signup from './pages/Signup';
 import UpdateProfile from './pages/UpdateProfile';
 import UpdateUsername from './pages/UpdateUsername';
@@ -32,6 +35,8 @@ const AppRoutes = () => {
       <Route path="/check-email" element={<CheckEmail />} />
       <Route path="/home" element={user ? <Home /> : <Navigate to="/welcome" replace />} />
       <Route path="/post/:id" element={user ? <PostDetails /> : <Navigate to="/login" replace />} />
+      <Route path="/comment/:id" element={user ? <CommentDetails /> : <Navigate to="/login" replace />} />
+      <Route path="/profile/:userId" element={user ? <Profile /> : <Navigate to="/login" replace />} />
       <Route path="/compose-post" element={user ? <ComposePost /> : <Navigate to="/login" replace />} />
       <Route path="/inbox" element={user ? <Inbox /> : <Navigate to="/login" replace />} />
       <Route path="/chat/:username" element={user ? <Chat /> : <Navigate to="/login" replace />} />

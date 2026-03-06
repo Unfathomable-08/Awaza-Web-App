@@ -2,7 +2,7 @@ import { onValue, push, ref, set } from 'firebase/database';
 import { motion } from 'framer-motion';
 import { Send } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Avatar from '../components/Avatar';
 import Header from '../components/Header';
 import ScreenWrapper from '../components/ScreenWrapper';
@@ -14,8 +14,7 @@ import { createChatsMetadata } from '../utils/inbox';
 import { searchUserByID } from '../utils/search';
 
 const Chat: React.FC = () => {
-    const { username } = useParams(); // This is the chat room slug (e.g., id1_id2)
-    const navigate = useNavigate();
+    const { username } = useParams<{ username: string }>(); // This is the chat room slug (e.g., id1_id2)
     const { user } = useAuth();
     const [otherUser, setOtherUser] = useState<any>({
         _id: "",
@@ -134,8 +133,8 @@ const Chat: React.FC = () => {
                             >
                                 <div
                                     className={`px-4 py-3 rounded-2xl text-[16px] font-medium leading-relaxed shadow-sm ${isMine
-                                            ? 'bg-primary text-white rounded-br-none'
-                                            : 'bg-gray-100 text-gray-800 rounded-bl-none'
+                                        ? 'bg-primary text-white rounded-br-none'
+                                        : 'bg-gray-100 text-gray-800 rounded-bl-none'
                                         }`}
                                     style={{ backgroundColor: isMine ? colors.primary : undefined }}
                                 >

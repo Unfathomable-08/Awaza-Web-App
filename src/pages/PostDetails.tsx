@@ -54,7 +54,7 @@ const PostDetails: React.FC = () => {
     const handleLike = async () => {
         if (!post || !user) return;
         try {
-            const userId = user._id || user.id;
+            const userId = user.id;
             const alreadyLiked = post.likes?.includes(userId);
 
             setPost((p: any) => ({
@@ -97,7 +97,7 @@ const PostDetails: React.FC = () => {
         );
     }
 
-    const isLiked = post.likes?.includes(user?._id || user?.id);
+    const isLiked = post.likes?.includes(user?.id);
 
     return (
         <ScreenWrapper bg="white">
@@ -173,7 +173,7 @@ const PostDetails: React.FC = () => {
                                         key={rootComment._id}
                                         comment={rootComment}
                                         postId={postId!}
-                                        currentUserId={user?._id || user?.id}
+                                        currentUserId={user?.id}
                                         depth={0}
                                     />
                                 ))}
