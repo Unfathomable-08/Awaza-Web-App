@@ -1,0 +1,65 @@
+import axois from "axios";
+const AsyncStorage = {
+  getItem: (key: string) => Promise.resolve(localStorage.getItem(key)),
+  setItem: (key: string, value: string) => Promise.resolve(localStorage.setItem(key, value)),
+  removeItem: (key: string) => Promise.resolve(localStorage.removeItem(key)),
+};
+
+const API_URL = "https://social-media-app-backend-khaki.vercel.app/api/inbox";
+const TOKEN_KEY = "auth_token"
+
+const api = axois.create({
+  baseURL: API_URL,
+})
+
+// Add token to every request
+api.interceptors.request.use(async (config) => {
+  const token = await AsyncStorage.getItem(TOKEN_KEY);
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export const getChatsMetadata = async () => {
+  try {
+    const res = await api.get(`/chats`);
+    console.log(res.data.chats)
+
+    return res.data.chats;
+  }
+  catch (error: any) {
+    console.error("Error getting chats:", error);
+
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Failed to load feed');
+    } else if (error.request) {
+      throw new Error('No response from server. Check your internet connection.');
+    } else {
+      throw new Error(error.message || 'An unexpected error occurred');
+    }
+  }
+}
+
+export const createChatsMetadata = async (users: string[]) => {
+  try {
+    const res = await api.post(`/chats`, {
+      users: users
+    });
+    console.log(res)
+
+    return res.data.chats;
+  }
+  catch (error: any) {
+    console.error("Error creating chat metadata:", error);
+
+    if (error.response) {
+      throw new Error(error.response.data.message || 'Failed to load feed');
+    } else if (error.request) {
+      throw new Error('No response from server. Check your internet connection.');
+    } else {
+      throw new Error(error.message || 'An unexpected error occurred');
+    }
+  }
+}
