@@ -55,7 +55,7 @@ const UpdateProfile: React.FC = () => {
                 imageUrl = res.data.data.url;
             }
 
-            const updatedData = await updateProfile(name.trim(), imageUrl);
+            await updateProfile(name.trim(), imageUrl);
 
             // Update auth context state if available
             if (login && user) {

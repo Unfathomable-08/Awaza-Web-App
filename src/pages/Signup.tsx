@@ -67,27 +67,26 @@ const Signup: React.FC = () => {
                 {/* Form */}
                 <form onSubmit={onSubmit} className="flex flex-col gap-6">
                     <Input
-                        icon={<User size={24} color={colors.textLight} />}
-                        placeholder="Create a username"
+                        icon={<User size={22} />}
+                        placeholder="Full Name"
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
+                        onChange={(val) => setUsername(val)}
                     />
+
                     <Input
-                        icon={<Mail size={24} color={colors.textLight} />}
-                        placeholder="Enter your email"
-                        type="email"
+                        icon={<Mail size={22} />}
+                        placeholder="Email address"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
+                        onChange={(val) => setEmail(val)}
+                        type="email"
                     />
+
                     <Input
-                        icon={<Lock size={24} color={colors.textLight} />}
-                        placeholder="Enter your password"
-                        type="password"
+                        icon={<Lock size={22} />}
+                        placeholder="Password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
+                        onChange={(val) => setPassword(val)}
+                        type="password"
                     />
 
                     {error && (

@@ -64,7 +64,7 @@ const Login: React.FC = () => {
                         placeholder="Enter your email"
                         type="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(val) => setEmail(val)}
                         required
                     />
                     <div className="flex flex-col gap-3">
@@ -73,7 +73,7 @@ const Login: React.FC = () => {
                             placeholder="Enter your password"
                             type="password"
                             value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(val) => setPassword(val)}
                             required
                         />
                         <div className="self-end px-2">

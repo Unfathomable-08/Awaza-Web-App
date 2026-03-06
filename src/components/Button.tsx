@@ -9,6 +9,7 @@ interface ButtonProps {
     loading?: boolean;
     hasShadow?: boolean;
     disabled?: boolean;
+    variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -17,27 +18,63 @@ const Button: React.FC<ButtonProps> = ({
     title = '',
     onClick = () => { },
     loading = false,
-    hasShadow = true,
+    hasShadow = false,
     disabled = false,
+    variant = 'primary',
 }) => {
-    const shadowClass = hasShadow ? 'shadow-md' : '';
-    const opacityClass = (disabled || loading) ? 'opacity-60 cursor-not-allowed' : 'hover:opacity-90 active:scale-95 transition-all';
+
+    const getVariantStyles = () => {
+        switch (variant) {
+            case 'secondary':
+                return {
+                    bg: colors.secondary,
+                    text: 'white',
+                    border: 'none'
+                };
+            case 'outline':
+                return {
+                    bg: 'transparent',
+                    text: colors.text,
+                    border: `1px solid ${colors.border}`
+                };
+            case 'ghost':
+                return {
+                    bg: 'transparent',
+                    text: colors.primary,
+                    border: 'none'
+                };
+            default:
+                return {
+                    bg: colors.primary,
+                    text: 'white',
+                    border: 'none'
+                };
+        }
+    };
+
+    const styles = getVariantStyles();
+    const shadowClass = hasShadow ? 'shadow-premium' : '';
+    const opacityClass = (disabled || loading) ? 'opacity-50 cursor-not-allowed' : 'active-scale btn-hover';
 
     return (
         <button
             onClick={!disabled && !loading ? onClick : undefined}
             disabled={disabled || loading}
             className={`
-                flex items-center justify-center rounded-3xl h-14 w-full px-6
+                flex items-center justify-center rounded-[20px] h-[58px] w-full px-6
+                font-outfit font-bold text-[17px] tracking-wide
                 ${shadowClass} ${opacityClass} ${className}
             `}
-            style={{ backgroundColor: loading ? 'white' : colors.primary }}
+            style={{
+                backgroundColor: styles.bg,
+                color: styles.text,
+                border: styles.border,
+            }}
         >
             {loading ? (
-                <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"
-                    style={{ borderColor: `${colors.primary} transparent ${colors.primary} ${colors.primary}` }}></div>
+                <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
             ) : (
-                <span className={`text-white font-bold text-lg ${textClassName}`}>
+                <span className={textClassName}>
                     {title}
                 </span>
             )}

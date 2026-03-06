@@ -66,13 +66,27 @@ const PostItem: React.FC<PostItemProps> = ({ item, currentUser }) => {
             {/* Header */}
             <div className="flex flex-row justify-between items-center mb-4">
                 <div className="flex flex-row items-center gap-3">
-                    <Avatar
-                        size={40}
-                        uri={item?.user?.avatar}
-                        rounded={14}
-                    />
-                    <div className="flex flex-col">
-                        <span className="text-[16px] font-bold" style={{ color: colors.text }}>
+                    <div
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/profile/${item?.user?._id || item?.user?.id}`);
+                        }}
+                        className="cursor-pointer active:scale-95 transition-all"
+                    >
+                        <Avatar
+                            size={40}
+                            uri={item?.user?.avatar}
+                            rounded={14}
+                        />
+                    </div>
+                    <div
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/profile/${item?.user?._id || item?.user?.id}`);
+                        }}
+                        className="flex flex-col cursor-pointer"
+                    >
+                        <span className="text-[16px] font-bold hover:underline" style={{ color: colors.text }}>
                             {item?.user?.name}
                         </span>
                         <span className="text-[13px] opacity-60" style={{ color: colors.textMuted }}>
