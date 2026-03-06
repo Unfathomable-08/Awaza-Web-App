@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion';
-import { Plus, Send } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { BiSolidMessageRoundedDetail } from "react-icons/bi";
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Avatar from '../components/Avatar';
 import Feed from '../components/Feed';
+import Header from '../components/Header';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { colors } from '../constants/Colors';
 import { useAuth } from '../contexts/authContext';
@@ -33,53 +34,58 @@ const Home: React.FC = () => {
     }, []);
 
     return (
-        <ScreenWrapper bg="white">
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="flex flex-col h-full bg-white relative"
-            >
-                {/* Header */}
-                <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md flex flex-row justify-between items-center px-6 py-4 border-b border-gray-50">
-                    <h1 className="text-3xl font-black tracking-tighter" style={{ color: colors.primary }}>
-                        Awaza
-                    </h1>
-                    <div className="flex flex-row items-center gap-4">
-                        <button
-                            onClick={() => navigate('/account-setting')}
-                            className="hover:scale-105 active:scale-95 transition-all outline-none"
-                        >
-                            <Avatar uri={user?.avatar} size={38} rounded={19} />
-                        </button>
-                        <button
-                            onClick={() => navigate('/inbox')}
-                            className="p-2.5 bg-gray-50 rounded-full hover:bg-gray-100 active:bg-gray-200 transition-all text-gray-700"
-                        >
-                            <Send size={22} />
-                        </button>
-                    </div>
-                </header>
+        <ScreenWrapper bg={colors.background}>
+            <div className="flex flex-col h-full bg-white relative overflow-hidden">
+                {/* Premium Header */}
+                <Header
+                    showBackButton={false}
+                    centerElement={
+                        <h1 className="text-4xl font-outfit font-black tracking-tighter" style={{ color: colors.primary }}>
+                            Awaza
+                        </h1>
+                    }
+                    rightElement={
+                        <div className="flex flex-row items-center gap-3">
+                            <button
+                                onClick={() => navigate('/inbox')}
+                                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 active:scale-90 transition-all text-gray-700"
+                            >
+                                <BiSolidMessageRoundedDetail style={{color: colors.primary}} size={30}/>
+                            </button>
+                        </div>
+                    }
+                />
 
                 {/* Feed container */}
                 <div className="flex-1 overflow-hidden relative">
-                    <Feed
-                        data={posts}
-                        loading={loading}
-                        user={user}
-                    />
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5 }}
+                        className="h-full"
+                    >
+                        <Feed
+                            data={posts}
+                            loading={loading}
+                            user={user}
+                        />
+                    </motion.div>
 
                     {/* Floating Action Button */}
                     <motion.button
-                        whileHover={{ scale: 1.05 }}
+                        whileHover={{ scale: 1.05, y: -2 }}
                         whileTap={{ scale: 0.95 }}
+                        initial={{ scale: 0, opacity: 0, y: 50 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5, type: "spring", stiffness: 260, damping: 20 }}
                         onClick={() => navigate('/compose-post')}
-                        className="absolute bottom-6 right-6 w-16 h-16 rounded-full flex items-center justify-center shadow-xl text-white z-40"
+                        className="fixed bottom-8 right-3 w-14 h-14 rounded-full flex items-center justify-center shadow-premium text-white z-40 active:brightness-90 transition-all"
                         style={{ backgroundColor: colors.primary }}
                     >
-                        <Plus size={32} strokeWidth={2.5} />
+                        <Plus size={26} strokeWidth={3} />
                     </motion.button>
                 </div>
-            </motion.div>
+            </div>
         </ScreenWrapper>
     );
 };

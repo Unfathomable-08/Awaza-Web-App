@@ -27,78 +27,82 @@ const CommentDetails: React.FC = () => {
     const handlePost = async () => {
         if (isDisabled) return;
         if (!postId) {
-            alert("Invalid post ID");
+            console.error("Invalid post ID");
             return;
         }
 
         setLoading(true);
         try {
             await createComment(postId, text.trim(), parentCommentId);
-            alert("Your reply has been posted!");
             navigate(-1);
         } catch (error: any) {
             console.error(error);
-            alert(error.message || "Failed to post. Try again.");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <ScreenWrapper bg="white">
-            <div className="flex flex-col min-h-full">
+        <ScreenWrapper bg={colors.background}>
+            <div className="flex flex-col h-full bg-white relative overflow-hidden">
                 <Header
-                    title="Reply"
+                    transparent
+                    title="Write Reply"
+                    showBackButton={true}
                     rightElement={
                         <Button
-                            title="Post"
+                            title="Reply"
                             onClick={handlePost}
                             loading={loading}
                             disabled={isDisabled}
-                            className="!h-9 !rounded-full !px-5 !w-auto"
-                            textClassName="!text-[14px]"
-                            hasShadow={false}
+                            className="!h-10 !rounded-[14px] !px-6 !w-auto"
+                            textClassName="!text-[15px] !font-bold"
+                            hasShadow={!isDisabled}
                         />
                     }
                 />
 
                 <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="flex-1 px-6 pt-10"
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex-1 px-8 pt-8 overflow-y-auto no-scrollbar"
                 >
-                    <div className="flex flex-row items-center gap-3 mb-8">
-                        <Avatar uri={user?.avatar} size={44} rounded={16} />
+                    <div className="flex flex-row items-center gap-4 mb-8">
+                        <Avatar uri={user?.avatar} size={48} rounded={18} className="shadow-soft" />
                         <div className="flex flex-col">
-                            <span className="font-bold text-[17px]" style={{ color: colors.text }}>{user?.name}</span>
-                            <span className="text-xs font-bold opacity-30">@{user?.username || 'user'}</span>
+                            <span className="font-outfit font-black text-[18px] tracking-tight leading-none mb-1" style={{ color: colors.text }}>
+                                {user?.name}
+                            </span>
+                            <span className="text-sm font-bold opacity-30 uppercase tracking-tight">
+                                @{user?.username || 'user'}
+                            </span>
                         </div>
                     </div>
 
                     <textarea
                         autoFocus
-                        placeholder="Type your reply..."
+                        placeholder="Share your thoughts..."
                         value={text}
                         onChange={(e) => setText(e.target.value)}
-                        className={`w-full min-h-[200px] text-lg font-medium bg-transparent outline-none resize-none placeholder:opacity-30 ${isOverLimit ? 'text-rose-500' : ''
-                            }`}
+                        className={`w-full min-h-[300px] text-[18px] font-medium bg-transparent outline-none resize-none placeholder:opacity-30 leading-relaxed ${isOverLimit ? 'text-error' : ''}`}
                         style={{ color: isOverLimit ? undefined : colors.text }}
                     />
                 </motion.div>
 
-                {/* Toolbar */}
-                <div className="sticky bottom-0 bg-white border-t border-gray-50 p-4 flex flex-row items-center justify-end overflow-hidden pb-10">
-                    <div className="flex flex-row items-center gap-1.5">
+                {/* Toolbar / Character Counter */}
+                <div className="p-8 flex flex-row items-center justify-end">
+                    <div className="flex flex-row items-center gap-2 px-4 py-2 bg-gray-50 rounded-full">
                         <span
-                            className={`text-sm font-bold transition-colors ${text.length > 300 ? 'text-rose-500' :
-                                    text.length > 200 ? 'text-amber-500' :
-                                        'opacity-30'
+                            className={`text-[13px] font-bold transition-colors ${text.length > MAX_CHARS - 50 ? 'text-error' :
+                                text.length > MAX_CHARS - 100 ? 'text-warning' :
+                                    'opacity-40'
                                 }`}
                         >
                             {text.length}
                         </span>
-                        <span className="text-sm font-black opacity-10">/</span>
-                        <span className="text-sm font-bold opacity-10">{MAX_CHARS}</span>
+                        <span className="text-[13px] font-bold opacity-10">/</span>
+                        <span className="text-[13px] font-bold opacity-10">{MAX_CHARS}</span>
                     </div>
                 </div>
             </div>

@@ -19,7 +19,7 @@ const Input: React.FC<InputProps> = ({
     return (
         <div
             className={`
-                flex flex-row items-center h-[64px] px-5 gap-4 rounded-[22px] 
+                flex flex-row items-center py-4 px-5 gap-4 rounded-xl 
                 transition-all duration-200 border border-transparent
                 focus-within:border-primary/30 focus-within:bg-white focus-within:shadow-soft
                 ${containerClassName}

@@ -28,7 +28,7 @@ export const colors = {
     // UI Elements
     border: '#E5E5EA',
     separator: '#F2F2F7',
-    inputBg: '#F2F2F7',
+    inputBg: '#EFEFEF',
 
     // Overlays
     overlay: 'rgba(0,0,0,0.4)',

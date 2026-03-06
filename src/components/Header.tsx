@@ -22,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({
 
     return (
         <header className={`
-            sticky top-0 z-50 flex flex-row items-center justify-between h-[70px] px-5 w-full
+            sticky top-0 z-50 flex flex-row items-center justify-between h-16 w-full
             ${transparent ? 'bg-transparent' : 'glass border-b border-gray-100/50'}
         `}>
             <div className="flex items-center w-12">
@@ -47,7 +47,7 @@ const Header: React.FC<HeaderProps> = ({
                 )}
             </div>
 
-            <div className="flex items-center justify-end w-12">
+            <div className="flex items-center justify-end px-1 pt-1 w-12">
                 {rightElement}
             </div>
         </header>

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { Heart, MessageSquare } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +30,6 @@ export const NestedComment: React.FC<NestedCommentProps> = ({
         const newLiked = !liked;
         setLiked(newLiked);
         setLikesCount((prev: number) => newLiked ? prev + 1 : prev - 1);
-        // Implement backend call if necessary, but UI logic is first
     };
 
     const hasReplies = comment.replies && comment.replies.length > 0;
@@ -37,67 +37,69 @@ export const NestedComment: React.FC<NestedCommentProps> = ({
 
     return (
         <div className="relative">
-            {/* Vertical thread line - Twitter style */}
+            {/* Vertical thread line */}
             {showThreadLine && (
                 <div
-                    className="absolute w-[2px] bg-gray-100 left-4 rounded-full"
+                    className="absolute w-[1.5px] bg-gray-100 left-5 rounded-full"
                     style={{
-                        height: hasReplies || !isLastInThread ? "100%" : "40px",
-                        top: hasReplies ? "0" : "40px",
-                        opacity: depth >= 5 ? 0.4 : 1,
+                        height: hasReplies || !isLastInThread ? "100%" : "30px",
+                        top: hasReplies ? "0" : "30px",
+                        opacity: 0.5,
                     }}
                 />
             )}
 
-            {/* Horizontal connector line (only for replies) */}
-            {depth > 0 && (
-                <div
-                    className="absolute w-5 h-[2px] bg-gray-100 rounded-full top-[26px] left-4"
-                />
-            )}
-
             <div
-                className={`flex flex-row mt-3 min-h-[60px] ${depth === 0 ? '' : 'pl-[52px]'}`}
+                className={`flex flex-row mt-4 ${depth === 0 ? '' : 'pl-6'}`}
             >
-                <div className="w-[52px] flex items-start justify-center pt-2">
-                    <button onClick={() => { }} className="active:scale-95 transition-all">
-                        <Avatar
-                            uri={comment.user?.avatar}
-                            size={34}
-                            rounded={12}
-                        />
-                    </button>
+                <div className="flex flex-col items-center">
+                    <Avatar
+                        uri={comment.user?.avatar}
+                        size={36}
+                        rounded={14}
+                        onClick={() => navigate(`/profile/${comment.user?._id || comment.user?.id}`)}
+                    />
+                    {hasReplies && (
+                        <div className="flex-1 w-[1.5px] bg-gray-100 my-2 opacity-50 rounded-full" />
+                    )}
                 </div>
 
-                <div className="flex-1 pr-4">
-                    <div className="flex flex-row items-center gap-1.5 flex-wrap">
-                        <span className="font-bold text-[15px]" style={{ color: colors.text }}>
+                <div className="flex-1 pl-4 pr-2 pb-6">
+                    <div className="flex flex-row items-center gap-2 mb-1.5 flex-wrap">
+                        <span
+                            className="font-outfit font-black text-[15px] opacity-80 cursor-pointer hover:text-primary transition-colors"
+                            style={{ color: colors.text }}
+                            onClick={() => navigate(`/profile/${comment.user?._id || comment.user?.id}`)}
+                        >
                             {comment.user?.name}
                         </span>
-                        <span className="text-sm font-medium opacity-30">
-                            @{comment.user?.username || 'user'}
-                        </span>
-                        <span className="text-sm opacity-30">·</span>
-                        <span className="text-sm font-bold opacity-30 uppercase tracking-tighter">
-                            {timeAgo(comment.createdAt)}
+                        <span className="text-[12px] font-bold opacity-20 uppercase tracking-tight">
+                            · {timeAgo(comment.createdAt)}
                         </span>
                     </div>
 
-                    <p className="text-[15px] font-medium leading-relaxed mt-1" style={{ color: colors.text }}>
+                    <p className="text-[15px] font-medium leading-relaxed" style={{ color: colors.textLight }}>
                         {comment.content}
                     </p>
 
-                    <div className="flex flex-row items-center gap-8 mt-3">
+                    <div className="flex flex-row items-center gap-7 mt-3.5">
                         <button
                             onClick={handleLike}
-                            className={`flex flex-row items-center gap-1.5 group active:scale-95 transition-all`}
+                            className="flex flex-row items-center gap-2 group outline-none"
                         >
-                            <Heart
-                                size={18}
-                                className={`transition-colors ${liked ? 'fill-rose-500 text-rose-500' : 'text-gray-300 group-hover:text-rose-400'}`}
-                            />
+                            <motion.div
+                                whileTap={{ scale: 1.4 }}
+                                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                            >
+                                <Heart
+                                    size={18}
+                                    strokeWidth={liked ? 0 : 2.5}
+                                    className={`transition-all ${liked ? 'fill-error scale-110' : 'text-gray-200 group-hover:text-error'}`}
+                                    style={{ color: liked ? colors.error : undefined }}
+                                />
+                            </motion.div>
                             {likesCount > 0 && (
-                                <span className={`text-sm font-bold ${liked ? 'text-rose-500' : 'opacity-30'}`}>
+                                <span className={`text-[13px] font-bold ${liked ? 'text-error' : 'opacity-20 transition-opacity group-hover:opacity-100'}`}>
                                     {likesCount}
                                 </span>
                             )}
@@ -105,9 +107,13 @@ export const NestedComment: React.FC<NestedCommentProps> = ({
 
                         <button
                             onClick={() => navigate(`/comment/${postId}_${comment._id}`)}
-                            className="text-gray-300 hover:text-primary active:scale-95 transition-all group"
+                            className="flex flex-row items-center gap-2 group outline-none"
                         >
-                            <MessageSquare size={18} className="group-hover:text-blue-400" />
+                            <MessageSquare
+                                size={18}
+                                strokeWidth={2.5}
+                                className="text-gray-200 group-hover:text-info transition-colors"
+                            />
                         </button>
                     </div>
                 </div>
@@ -115,7 +121,7 @@ export const NestedComment: React.FC<NestedCommentProps> = ({
 
             {/* Render replies */}
             {hasReplies && (
-                <div className="flex flex-col">
+                <div className="flex flex-col ml-8">
                     {comment.replies.map((reply: any, index: number) => (
                         <NestedComment
                             key={reply._id}

@@ -61,7 +61,7 @@ const Button: React.FC<ButtonProps> = ({
             onClick={!disabled && !loading ? onClick : undefined}
             disabled={disabled || loading}
             className={`
-                flex items-center justify-center rounded-[20px] h-[58px] w-full px-6
+                flex items-center justify-center rounded-xl py-3 w-full px-6
                 font-outfit font-bold text-[17px] tracking-wide
                 ${shadowClass} ${opacityClass} ${className}
             `}
