@@ -25,7 +25,6 @@ interface FeedProps {
  * Feed
  *
  * Uses `no-scrollbar` to hide the native scrollbar on all platforms while
- * keeping the content scrollable.  Bottom padding of 88 px clears the
  * floating action button so the last post is always reachable.
  */
 const Feed: React.FC<FeedProps> = ({ data, loading = false, user }) => {
@@ -33,8 +32,7 @@ const Feed: React.FC<FeedProps> = ({ data, loading = false, user }) => {
 
     return (
         <div
-            className="flex-1 overflow-y-auto no-scrollbar h-full"
-            style={{ paddingBottom: 88 }} /* Clears the FAB */
+            className="flex-1 overflow-y-auto no-scrollbar h-full pb-8"
         >
             {/* ── Empty state ── */}
             {isEmpty && (

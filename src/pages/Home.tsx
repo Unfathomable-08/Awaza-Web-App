@@ -37,18 +37,25 @@ const Home: React.FC = () => {
     const [hasMore, setHasMore] = useState(true);
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
+    const [cursor, setCursor] = useState<string | null>(null);
+    const [page, setPage] = useState(1);
 
     /** Load the initial page of posts on mount */
     useEffect(() => {
-        setHasMore(true);
+        if (loading || !hasMore || refreshing) return;
         loadFeed({
-            isLoadMore: false,
-            loading, setLoading,
-            refreshing, setRefreshing,
-            hasMore, setHasMore,
+            isLoadMore: page > 1 ? true : false,
+            loading, 
+            setLoading,
+            refreshing, 
+            setRefreshing,
+            hasMore, 
+            setHasMore,
+            cursor,
+            setCursor,
             setPosts,
         });
-    }, []);
+    }, [page]);
 
     return (
         <ScreenWrapper>
@@ -115,6 +122,21 @@ const Home: React.FC = () => {
                     </motion.button>
                 </div>
             </div>
+
+            {/* Infinite Scroll Trigger */}
+            <motion.div
+                className="flex justify-center items-center min-h-25"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                onViewportEnter={() => {
+                    if (hasMore && !loading) {
+                        setPage((prev) => prev + 1);
+                    }
+                }}
+            >
+                {!hasMore && <p className="text-gray-500">No more products</p>}
+            </motion.div>
         </ScreenWrapper>
     );
 };

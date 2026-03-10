@@ -33,6 +33,7 @@ export const loadFeed = async ({
   else setRefreshing(true);
 
   try {
+    console.log("cursor", cursor, isLoadMore, refreshing, hasMore, loading);
     const data = await getFeed(isLoadMore ? cursor ?? undefined : undefined);
 
     if (isLoadMore) {
