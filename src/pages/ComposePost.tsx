@@ -63,7 +63,7 @@ const ComposePost: React.FC = () => {
                             onClick={handlePost}
                             loading={loading}
                             disabled={isDisabled}
-                            className="!h-8 !rounded-full !px-4 !w-auto !text-[13px]"
+                            className="h-8! rounded-full! px-4! w-auto! text-[13px]!"
                         />
                     }
                 />
@@ -82,7 +82,7 @@ const ComposePost: React.FC = () => {
                         placeholder="What's on your mind?"
                         value={text}
                         onChange={(e) => setText(e.target.value)}
-                        className="w-full min-h-[140px] text-[17px] font-normal bg-transparent outline-none resize-none leading-relaxed"
+                        className="w-full min-h-35 text-[17px] font-normal bg-transparent outline-none resize-none leading-relaxed"
                         style={{
                             color: isOverLimit ? 'var(--color-error)' : 'var(--color-text)',
                             caretColor: 'var(--color-primary)',

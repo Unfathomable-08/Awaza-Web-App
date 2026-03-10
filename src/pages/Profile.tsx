@@ -122,7 +122,7 @@ const Profile: React.FC = () => {
                             {!isOwnProfile ? (
                                 <>
                                     <button
-                                        className="flex-[2] h-11 rounded-xl text-white font-bold flex items-center justify-center gap-2 shadow-premium active-scale transition-all text-[14px]"
+                                        className="flex-2 h-11 rounded-xl text-white font-bold flex items-center justify-center gap-2 shadow-premium active-scale transition-all text-[14px]"
                                         style={{ backgroundColor: 'var(--color-primary)' }}
                                     >
                                         <UserPlus size={17} strokeWidth={2.5} />

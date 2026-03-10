@@ -196,65 +196,74 @@ body {
 }
 
 /* ─────────────────────────────────────────────
-   Shared color utility classes (CSS-var backed)
+   Utility classes — all backed by CSS variables.
+   Use these classNames instead of style props.
    ───────────────────────────────────────────── */
-.text-primary       { color: var(--color-primary) !important; }
-.text-error         { color: var(--color-error) !important; }
-.text-success       { color: var(--color-success) !important; }
-.text-warning       { color: var(--color-warning) !important; }
-.text-info          { color: var(--color-info) !important; }
-.text-muted         { color: var(--color-text-muted) !important; }
-.text-app           { color: var(--color-text) !important; }
-.text-light         { color: var(--color-text-light) !important; }
 
-.bg-primary         { background-color: var(--color-primary) !important; }
-.bg-primary-dark    { background-color: var(--color-primary-dark) !important; }
-.bg-error           { background-color: var(--color-error) !important; }
-.bg-input           { background-color: var(--color-input-bg) !important; }
-.bg-subtle          { background-color: var(--color-bg-subtle) !important; }
+/* --- Text colors --- */
+.text-primary   { color: var(--color-primary)      !important; }
+.text-error     { color: var(--color-error)        !important; }
+.text-success   { color: var(--color-success)      !important; }
+.text-warning   { color: var(--color-warning)      !important; }
+.text-info      { color: var(--color-info)         !important; }
+.text-muted     { color: var(--color-text-muted)   !important; }
+.text-app       { color: var(--color-text)         !important; }
+.text-light     { color: var(--color-text-light)   !important; }
 
-.border-primary     { border-color: var(--color-primary) !important; }
-.border-app         { border-color: var(--color-border) !important; }
+/* --- Background colors --- */
+.bg-primary     { background-color: var(--color-primary)    !important; }
+.bg-primary-dk  { background-color: var(--color-primary-dark) !important; }
+.bg-error       { background-color: var(--color-error)      !important; }
+.bg-success     { background-color: var(--color-success)    !important; }
+.bg-input       { background-color: var(--color-input-bg)   !important; }
+.bg-subtle      { background-color: var(--color-bg-subtle)  !important; }
+.bg-separator   { background-color: var(--color-separator)  !important; }
+.bg-card        { background-color: var(--color-card)       !important; }
+.bg-app         { background-color: var(--color-bg)         !important; }
 
-.fill-error         { fill: var(--color-error) !important; }
-.fill-primary       { fill: var(--color-primary) !important; }
+/* --- Border colors --- */
+.border-primary { border-color: var(--color-primary)   !important; }
+.border-error   { border-color: var(--color-error)     !important; }
+.border-app     { border-color: var(--color-border)    !important; }
+.border-sep     { border-color: var(--color-separator) !important; }
+.border-card    { border-color: var(--color-card-border) !important; }
 
-.ring-primary       { --tw-ring-color: var(--color-primary); }
+/* --- Fill (SVG) --- */
+.fill-primary   { fill: var(--color-primary) !important; }
+.fill-error     { fill: var(--color-error)   !important; }
 
-/* Opacity variants for primary */
-.bg-primary\/5  { background-color: color-mix(in srgb, var(--color-primary) 5%, transparent); }
-.bg-primary\/10 { background-color: color-mix(in srgb, var(--color-primary) 10%, transparent); }
-.bg-primary\/20 { background-color: color-mix(in srgb, var(--color-primary) 20%, transparent); }
-.bg-error\/5    { background-color: color-mix(in srgb, var(--color-error) 5%, transparent); }
-.bg-error\/10   { background-color: color-mix(in srgb, var(--color-error) 10%, transparent); }
-.bg-info\/5     { background-color: color-mix(in srgb, var(--color-info) 5%, transparent); }
-.bg-success\/5  { background-color: color-mix(in srgb, var(--color-success) 5%, transparent); }
+/* --- Alpha variants (color-mix) --- */
+.bg-primary-5   { background-color: color-mix(in srgb, var(--color-primary)  5%,  transparent); }
+.bg-primary-10  { background-color: color-mix(in srgb, var(--color-primary)  10%, transparent); }
+.bg-primary-12  { background-color: color-mix(in srgb, var(--color-primary)  12%, transparent); }
+.bg-error-5     { background-color: color-mix(in srgb, var(--color-error)    5%,  transparent); }
+.bg-error-8     { background-color: color-mix(in srgb, var(--color-error)    8%,  transparent); }
+.bg-error-10    { background-color: color-mix(in srgb, var(--color-error)    10%, transparent); }
+.bg-info-5      { background-color: color-mix(in srgb, var(--color-info)     5%,  transparent); }
+.bg-success-5   { background-color: color-mix(in srgb, var(--color-success)  5%,  transparent); }
 
-.border-primary\/10 { border-color: color-mix(in srgb, var(--color-primary) 10%, transparent); }
-.border-primary\/20 { border-color: color-mix(in srgb, var(--color-primary) 20%, transparent); }
-.border-error\/10   { border-color: color-mix(in srgb, var(--color-error) 10%, transparent); }
-.text-error\/70     { color: color-mix(in srgb, var(--color-error) 70%, transparent); }
+.border-primary-10 { border-color: color-mix(in srgb, var(--color-primary) 10%, transparent); }
+.border-primary-20 { border-color: color-mix(in srgb, var(--color-primary) 20%, transparent); }
+.border-primary-30 { border-color: color-mix(in srgb, var(--color-primary) 30%, transparent); }
+.border-error-10   { border-color: color-mix(in srgb, var(--color-error)   10%, transparent); }
+.border-error-15   { border-color: color-mix(in srgb, var(--color-error)   15%, transparent); }
 
-/* spin */
-.border-t-primary { border-top-color: var(--color-primary) !important; }
-.border-primary\/20 { border-color: color-mix(in srgb, var(--color-primary) 20%, transparent); }
+/* --- Caret --- */
+.caret-primary  { caret-color: var(--color-primary); }
 
-/* Hover color overrides */
-.hover\:text-primary:hover  { color: var(--color-primary) !important; }
-.hover\:stroke-error:hover  { stroke: var(--color-error) !important; }
-.group:hover .group-hover\:stroke-error { stroke: var(--color-error) !important; }
-.group:hover .group-hover\:stroke-info  { stroke: var(--color-info) !important; }
-.group:hover .group-hover\:stroke-success { stroke: var(--color-success) !important; }
+/* --- Hover / group-hover overrides --- */
+.hover\:text-primary:hover                    { color: var(--color-primary) !important; }
+.group:hover .group-hover\:text-primary       { color: var(--color-primary) !important; }
+.group:hover .group-hover\:stroke-error       { stroke: var(--color-error)   !important; }
+.group:hover .group-hover\:stroke-info        { stroke: var(--color-info)    !important; }
+.group:hover .group-hover\:stroke-success     { stroke: var(--color-success) !important; }
 
-/* Focus ring */
-.focus-within\:border-primary\/30:focus-within {
+/* --- Focus-within --- */
+.focus-within\:border-primary-30:focus-within {
   border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
 }
-.focus\:ring-primary\/20:focus {
-  --tw-ring-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
-}
 
-/* Spinner used throughout */
+/* --- Spinner (reusable loader) --- */
 .spinner {
   width: 36px;
   height: 36px;
@@ -262,6 +271,11 @@ body {
   border-top-color: var(--color-primary);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
+}
+.spinner-sm {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
 }
 
 @keyframes spin {

@@ -137,7 +137,7 @@ const Chat: React.FC = () => {
                         <button
                             onClick={sendMessage}
                             disabled={!newMessage.trim()}
-                            className="w-9 h-9 flex items-center justify-center rounded-xl text-white active:scale-90 transition-all disabled:opacity-30 flex-shrink-0 mb-0.5"
+                            className="w-9 h-9 flex items-center justify-center rounded-xl text-white active:scale-90 transition-all disabled:opacity-30 shrink-0 mb-0.5"
                             style={{ backgroundColor: 'var(--color-primary)' }}
                         >
                             <Send size={17} strokeWidth={2} />

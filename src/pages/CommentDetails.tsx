@@ -43,7 +43,7 @@ const CommentDetails: React.FC = () => {
                             onClick={handlePost}
                             loading={loading}
                             disabled={isDisabled}
-                            className="!h-8 !rounded-full !px-4 !w-auto !text-[13px]"
+                            className="h-8! rounded-full! px-4! w-auto! text-[13px]!"
                         />
                     }
                 />
@@ -71,7 +71,7 @@ const CommentDetails: React.FC = () => {
                         placeholder="Share your thoughts..."
                         value={text}
                         onChange={(e) => setText(e.target.value)}
-                        className="w-full min-h-[240px] text-[16px] font-normal bg-transparent outline-none resize-none leading-relaxed"
+                        className="w-full min-h-60 text-[16px] font-normal bg-transparent outline-none resize-none leading-relaxed"
                         style={{
                             color: isOverLimit ? 'var(--color-error)' : 'var(--color-text)',
                             caretColor: 'var(--color-primary)',

@@ -118,7 +118,7 @@ const Inbox: React.FC = () => {
                                                         <span className="font-bold text-[15px] truncate" style={{ color: 'var(--color-text)' }}>
                                                             {otherUser?.username || 'Unknown'}
                                                         </span>
-                                                        <span className="text-[11px] font-semibold ml-2 flex-shrink-0" style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}>
+                                                        <span className="text-[11px] font-semibold ml-2 shrink-0" style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}>
                                                             {item.timestamp}
                                                         </span>
                                                     </div>
@@ -127,7 +127,7 @@ const Inbox: React.FC = () => {
                                                             {item.lastMessage}
                                                         </p>
                                                         {item.unread > 0 && (
-                                                            <div className="min-w-[18px] h-4.5 px-1.5 rounded-full flex items-center justify-center ml-2 flex-shrink-0" style={{ backgroundColor: 'var(--color-primary)' }}>
+                                                            <div className="min-w-4.5 h-4.5 px-1.5 rounded-full flex items-center justify-center ml-2 shrink-0" style={{ backgroundColor: 'var(--color-primary)' }}>
                                                                 <span className="text-[10px] font-black text-white">{item.unread}</span>
                                                             </div>
                                                         )}

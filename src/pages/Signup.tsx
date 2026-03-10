@@ -1,3 +1,11 @@
+/**
+ * @file Signup.tsx
+ * @description Registration screen for new users.
+ *
+ * Collects name, email, and password.  Performs light client-side validation
+ * (all fields required, password ≥ 6 chars) before calling `signUp`.
+ */
+
 import { motion } from 'framer-motion';
 import { Lock, Mail, User } from 'lucide-react';
 import React, { useState } from 'react';
@@ -8,28 +16,46 @@ import Input from '../components/Input';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { signUp } from '../utils/auth';
 
+/**
+ * Signup
+ *
+ * Layout mirrors Login for visual consistency.  After successful registration
+ * the auth context navigates the user to email verification.
+ */
 const Signup: React.FC = () => {
     const navigate = useNavigate();
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
+    // ── Form state ───────────────────────────────────────────────────────
+    const [username, setUsername] = useState('');
+    const [email,    setEmail]    = useState('');
+    const [password, setPassword] = useState('');
+    const [loading,  setLoading]  = useState(false);
+    const [error,    setError]    = useState<string | null>(null);
+
+    /** Validates inputs then calls the sign-up utility */
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const tu = username.trim(), te = email.trim();
+        const tu = username.trim();
+        const te = email.trim();
+
         if (!tu || !te || !password) { setError('Please fill all the fields'); return; }
-        if (password.length < 6) { setError('Password must be at least 6 characters'); return; }
-        setLoading(true); setError(null);
-        try { await signUp(te, password, tu); }
-        catch (err: any) { setError(err.message || 'Account creation failed'); }
-        finally { setLoading(false); }
+        if (password.length < 6)     { setError('Password must be at least 6 characters'); return; }
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            await signUp(te, password, tu);
+        } catch (err: any) {
+            setError(err.message || 'Account creation failed');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <ScreenWrapper>
-            <Header transparent showBackButton={true} />
+            <Header transparent showBackButton />
 
             <div className="flex flex-col flex-1 px-6 pt-2 pb-10 overflow-y-auto no-scrollbar">
                 <motion.div
@@ -38,62 +64,49 @@ const Signup: React.FC = () => {
                     transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                     className="flex flex-col flex-1 gap-8"
                 >
-                    {/* Title */}
+                    {/* ── Page heading ── */}
                     <div className="flex flex-col pt-2">
-                        <span
-                            className="text-[14px] font-medium mb-1"
-                            style={{ color: 'var(--color-text-muted)' }}
-                        >
+                        <span className="text-[14px] font-medium mb-1 text-muted">
                             Join us today
                         </span>
-                        <h1
-                            className="text-[32px] font-outfit font-black tracking-tight leading-tight"
-                            style={{ color: 'var(--color-primary)' }}
-                        >
+                        <h1 className="text-[32px] font-outfit font-black tracking-tight leading-tight text-primary">
                             Create Account
                         </h1>
                     </div>
 
-                    {/* Form */}
+                    {/* ── Form ── */}
                     <form onSubmit={onSubmit} className="flex flex-col gap-5 w-full">
                         <div className="flex flex-col gap-3">
-                            <Input icon={<User />} placeholder="Full name" value={username} onChange={setUsername} required />
-                            <Input icon={<Mail />} placeholder="Email address" value={email} onChange={setEmail} type="email" required />
-                            <Input icon={<Lock />} placeholder="Password" value={password} onChange={setPassword} type="password" required />
+                            <Input icon={<User />}  placeholder="Full name"      value={username} onChange={setUsername} required />
+                            <Input icon={<Mail />}  placeholder="Email address"  value={email}    onChange={setEmail}    type="email"    required />
+                            <Input icon={<Lock />}  placeholder="Password"       value={password} onChange={setPassword} type="password" required />
                         </div>
 
+                        {/* Error alert */}
                         {error && (
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.96 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className="p-3 rounded-xl border"
-                                style={{
-                                    backgroundColor: 'color-mix(in srgb, var(--color-error) 5%, transparent)',
-                                    borderColor: 'color-mix(in srgb, var(--color-error) 15%, transparent)',
-                                }}
+                                className="p-3 rounded-xl border bg-error-5 border-error-15"
                             >
-                                <p
-                                    className="text-[13px] font-semibold text-center"
-                                    style={{ color: 'var(--color-error)' }}
-                                >
+                                <p className="text-[13px] font-semibold text-center text-error">
                                     {error}
                                 </p>
                             </motion.div>
                         )}
 
-                        <Button title="Create Account" loading={loading} hasShadow={true} />
+                        <Button title="Create Account" loading={loading} hasShadow />
                     </form>
 
-                    {/* Footer */}
+                    {/* ── Footer link ── */}
                     <div className="mt-auto flex flex-col items-center">
                         <div className="flex flex-row items-center gap-1.5">
-                            <span className="text-[14px] font-medium" style={{ color: 'var(--color-text-muted)' }}>
+                            <span className="text-[14px] font-medium text-muted">
                                 Already a member?
                             </span>
                             <button
                                 onClick={() => navigate('/login')}
-                                className="text-[14px] font-bold active-scale transition-opacity hover:opacity-70"
-                                style={{ color: 'var(--color-primary)' }}
+                                className="text-[14px] font-bold text-primary active-scale transition-opacity hover:opacity-70"
                             >
                                 Sign In
                             </button>
