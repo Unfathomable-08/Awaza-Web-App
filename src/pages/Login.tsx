@@ -29,10 +29,10 @@ const Login: React.FC = () => {
     const navigate = useNavigate();
 
     // ── Form state ───────────────────────────────────────────────────────
-    const [email,    setEmail]    = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loading,  setLoading]  = useState(false);
-    const [error,    setError]    = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     /** Submit handler — validates then calls the sign-in utility */
     const onSubmit = async (e: React.FormEvent) => {
@@ -50,7 +50,7 @@ const Login: React.FC = () => {
 
         try {
             await signIn(trimmedEmail, password);
-            // Navigation is handled by the auth context / protected routes
+            navigate('/');
         } catch (err: any) {
             setError(err.message || 'Authentication failed');
         } finally {

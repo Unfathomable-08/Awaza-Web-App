@@ -27,25 +27,26 @@ const Signup: React.FC = () => {
 
     // ── Form state ───────────────────────────────────────────────────────
     const [username, setUsername] = useState('');
-    const [email,    setEmail]    = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loading,  setLoading]  = useState(false);
-    const [error,    setError]    = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     /** Validates inputs then calls the sign-up utility */
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const tu = username.trim();
-        const te = email.trim();
+        const usernameTrimmed = username.trim();
+        const emailTrimmed = email.trim();
 
-        if (!tu || !te || !password) { setError('Please fill all the fields'); return; }
-        if (password.length < 6)     { setError('Password must be at least 6 characters'); return; }
+        if (!usernameTrimmed || !emailTrimmed || !password) { setError('Please fill all the fields'); return; }
+        if (password.length < 6) { setError('Password must be at least 6 characters'); return; }
 
         setLoading(true);
         setError(null);
 
         try {
-            await signUp(te, password, tu);
+            await signUp(emailTrimmed, password, usernameTrimmed);
+            navigate('/');
         } catch (err: any) {
             setError(err.message || 'Account creation failed');
         } finally {
@@ -77,9 +78,9 @@ const Signup: React.FC = () => {
                     {/* ── Form ── */}
                     <form onSubmit={onSubmit} className="flex flex-col gap-5 w-full">
                         <div className="flex flex-col gap-3">
-                            <Input icon={<User />}  placeholder="Full name"      value={username} onChange={setUsername} required />
-                            <Input icon={<Mail />}  placeholder="Email address"  value={email}    onChange={setEmail}    type="email"    required />
-                            <Input icon={<Lock />}  placeholder="Password"       value={password} onChange={setPassword} type="password" required />
+                            <Input icon={<User />} placeholder="Full name" value={username} onChange={setUsername} required />
+                            <Input icon={<Mail />} placeholder="Email address" value={email} onChange={setEmail} type="email" required />
+                            <Input icon={<Lock />} placeholder="Password" value={password} onChange={setPassword} type="password" required />
                         </div>
 
                         {/* Error alert */}

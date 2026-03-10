@@ -34,7 +34,7 @@ const PostDetails: React.FC = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { user } = useAuth();
-    
+
     // ── Data State ───────────────────────────────────────────────────────
     const [post, setPost] = useState<any>(null);
     const [comments, setComments] = useState<any[]>([]);
@@ -160,21 +160,21 @@ const PostDetails: React.FC = () => {
                                         size={22}
                                         strokeWidth={isLiked ? 0 : 2}
                                         style={{
-                                            color: isLiked ? 'var(--color-error)' : 'var(--color-border)',
+                                            color: isLiked ? 'var(--color-error)' : 'var(--color-text-muted)',
                                             fill: isLiked ? 'var(--color-error)' : 'transparent',
                                         }}
                                     />
-                                    <span className="text-[15px] font-bold" style={{ color: isLiked ? 'var(--color-error)' : 'var(--color-text-muted)', opacity: isLiked ? 1 : 0.5 }}>
+                                    <span className="text-[15px] font-bold" style={{ color: isLiked ? 'var(--color-error)' : 'var(--color-text-muted)' }}>
                                         {post.likesCount || 0}
                                     </span>
                                 </button>
-                                <div className="flex flex-row items-center gap-2" style={{ opacity: 0.8 }}>
+                                <div className="flex flex-row items-center gap-2">
                                     <MessageSquare size={22} strokeWidth={2} style={{ color: 'var(--color-text-muted)' }} />
                                     <span className="text-[15px] font-bold" style={{ color: 'var(--color-text-muted)' }}>{post.commentsCount || 0}</span>
                                 </div>
                             </div>
                             <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 active-scale transition-all">
-                                <Share2 size={20} strokeWidth={2} style={{ color: 'var(--color-text-muted)', opacity: 0.8 }} />
+                                <Share2 size={20} strokeWidth={2} style={{ color: 'var(--color-text-muted)' }} />
                             </button>
                         </div>
                     </motion.div>
@@ -201,17 +201,17 @@ const PostDetails: React.FC = () => {
                         ) : (
                             <div className="py-16 flex flex-col items-center justify-center text-center px-10">
                                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--color-separator)' }}>
-                                    <MessageCircle size={28} style={{ color: 'var(--color-text-muted)', opacity: 1 }} />
+                                    <MessageCircle size={28} style={{ color: 'var(--color-text-muted)' }} />
                                 </div>
                                 <h4 className="text-[15px] font-bold mb-1" style={{ color: 'var(--color-text)' }}>Be the first to reply</h4>
                                 <p className="text-[13px]" style={{ color: 'var(--color-text-muted)' }}>Start the conversation below</p>
                             </div>
                         )}
                     </div>
-                </div>
+                </div >
 
                 {/* ── Reply FAB ── */}
-                <motion.button
+                < motion.button
                     initial={{ scale: 0, opacity: 0, y: 40 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.4 }}
@@ -220,9 +220,9 @@ const PostDetails: React.FC = () => {
                     style={{ backgroundColor: 'var(--color-primary)' }}
                 >
                     <MessageSquare size={22} fill="currentColor" />
-                </motion.button>
-            </div>
-        </ScreenWrapper>
+                </motion.button >
+            </div >
+        </ScreenWrapper >
     );
 };
 

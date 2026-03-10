@@ -13,7 +13,8 @@
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { BiSolidMessageRoundedDetail } from 'react-icons/bi';
+import { RiMailSendFill } from "react-icons/ri";
+import { FaUserEdit } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import Feed from '../components/Feed';
 import Header from '../components/Header';
@@ -29,12 +30,12 @@ import { loadFeed } from '../utils/feed';
  */
 const Home: React.FC = () => {
     const navigate = useNavigate();
-    const { user }  = useAuth();
+    const { user } = useAuth();
 
     // ── Feed state ───────────────────────────────────────────────────────
-    const [posts,      setPosts]      = useState<any[]>([]);
-    const [hasMore,    setHasMore]    = useState(true);
-    const [loading,    setLoading]    = useState(false);
+    const [posts, setPosts] = useState<any[]>([]);
+    const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
 
     /** Load the initial page of posts on mount */
@@ -63,13 +64,22 @@ const Home: React.FC = () => {
                     }
                     rightElement={
                         /* Inbox shortcut icon */
-                        <button
-                            onClick={() => navigate('/inbox')}
-                            aria-label="Messages"
-                            className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 active:scale-90 transition-all"
-                        >
-                            <BiSolidMessageRoundedDetail className="text-primary" size={24} />
-                        </button>
+                        <div className="flex items-center gap-0.5">
+                            <button
+                                onClick={() => navigate('/profile')}
+                                aria-label="Profile"
+                                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 active:scale-90 transition-all"
+                            >
+                                <FaUserEdit className="text-primary" size={24} />
+                            </button>
+                            <button
+                                onClick={() => navigate('/inbox')}
+                                aria-label="Messages"
+                                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 active:scale-90 transition-all"
+                            >
+                                <RiMailSendFill className="text-primary" size={24} />
+                            </button>
+                        </div>
                     }
                 />
 

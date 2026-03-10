@@ -40,7 +40,7 @@ const PostItem: React.FC<PostItemProps> = ({ item, currentUser, index = 0 }) => 
     const navigate = useNavigate();
 
     // ── Local interaction state ──────────────────────────────────────────
-    const [liked, setLiked]           = useState(false);
+    const [liked, setLiked] = useState(false);
     const [likesCount, setLikesCount] = useState(0);
 
     /** Sync liked state from the post object */
@@ -192,7 +192,7 @@ const PostItem: React.FC<PostItemProps> = ({ item, currentUser, index = 0 }) => 
                         `}
                     >
                         <Heart
-                            size={19}
+                            size={21}
                             strokeWidth={liked ? 0 : 2}
                             className={`transition-all duration-150 ${liked ? 'text-error fill-error' : 'text-muted'}`}
                         />

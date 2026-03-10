@@ -53,11 +53,11 @@ export const NestedComment: React.FC<NestedCommentProps> = ({
     const navigate = useNavigate();
 
     // ── Local interaction state ──────────────────────────────────────────
-    const [liked, setLiked]           = useState(comment.likes?.includes(currentUserId));
+    const [liked, setLiked] = useState(comment.likes?.includes(currentUserId));
     const [likesCount, setLikesCount] = useState(comment.likesCount || 0);
 
-    const hasReplies  = comment.replies && comment.replies.length > 0;
-    const showLine    = depth > 0; // Only show thread line for nested replies
+    const hasReplies = comment.replies && comment.replies.length > 0;
+    const showLine = depth > 0; // Only show thread line for nested replies
 
     /**
      * Optimistic like toggle.
@@ -144,7 +144,7 @@ export const NestedComment: React.FC<NestedCommentProps> = ({
                                 <Heart
                                     size={16}
                                     strokeWidth={liked ? 0 : 2}
-                                    className={`transition-all duration-150 ${liked ? 'text-error fill-error' : 'text-app opacity-20'}`}
+                                    className={`transition-all duration-150 ${liked ? 'text-error fill-error' : 'text-muted'}`}
                                 />
                             </motion.div>
 
@@ -164,7 +164,7 @@ export const NestedComment: React.FC<NestedCommentProps> = ({
                             <MessageSquare
                                 size={16}
                                 strokeWidth={2}
-                                className="text-app opacity-20"
+                                className="text-muted"
                             />
                         </button>
                     </div>
