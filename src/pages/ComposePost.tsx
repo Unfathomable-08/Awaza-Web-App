@@ -10,7 +10,7 @@ import { useAuth } from '../contexts/authContext';
 import { createPost } from '../utils/post';
 
 const MAX_CHARS = 380;
-const IMGBB_API_KEY = '1a385d5be9971dda6af6d90952c6e372';
+const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_API_KEY;
 
 const ComposePost: React.FC = () => {
     const navigate = useNavigate();
