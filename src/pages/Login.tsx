@@ -18,6 +18,7 @@ import Header from '../components/Header';
 import Input from '../components/Input';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { signIn } from '../utils/auth';
+import { useAuth } from '../contexts/authContext';
 
 /**
  * Login
@@ -27,6 +28,7 @@ import { signIn } from '../utils/auth';
  */
 const Login: React.FC = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     // ── Form state ───────────────────────────────────────────────────────
     const [email, setEmail] = useState('');
@@ -49,7 +51,8 @@ const Login: React.FC = () => {
         setError(null);
 
         try {
-            await signIn(trimmedEmail, password);
+            const user = await signIn(trimmedEmail, password);
+            login(user);
             navigate('/');
         } catch (err: any) {
             setError(err.message || 'Authentication failed');

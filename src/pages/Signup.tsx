@@ -15,6 +15,7 @@ import Header from '../components/Header';
 import Input from '../components/Input';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { signUp } from '../utils/auth';
+import { useAuth } from '../contexts/authContext';
 
 /**
  * Signup
@@ -24,6 +25,7 @@ import { signUp } from '../utils/auth';
  */
 const Signup: React.FC = () => {
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     // ── Form state ───────────────────────────────────────────────────────
     const [username, setUsername] = useState('');
@@ -45,7 +47,8 @@ const Signup: React.FC = () => {
         setError(null);
 
         try {
-            await signUp(emailTrimmed, password, usernameTrimmed);
+            const user = await signUp(emailTrimmed, password, usernameTrimmed);
+            login(user);
             navigate('/');
         } catch (err: any) {
             setError(err.message || 'Account creation failed');
