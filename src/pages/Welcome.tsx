@@ -50,7 +50,7 @@ const Welcome: React.FC = () => {
                         transition={{ delay: 0.25, duration: 0.5 }}
                         className="text-5xl font-outfit font-black tracking-tight mb-2 text-primary"
                     >
-                        Awaza
+                        Awaza 2.0
                     </motion.h1>
 
                     <motion.p
