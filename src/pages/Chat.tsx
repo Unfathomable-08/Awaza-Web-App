@@ -104,7 +104,7 @@ const Chat: React.FC = () => {
                                 >
                                     {item.text}
                                 </div>
-                                <span className="text-[10px] font-semibold mt-1 px-1" style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}>
+                                <span className="text-[10px] font-semibold mt-1 px-1" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>
                                     {timeAgo(item.createdAt)}
                                 </span>
                             </motion.div>

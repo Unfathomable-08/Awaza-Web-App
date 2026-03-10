@@ -1,3 +1,15 @@
+/**
+ * @file PostDetails.tsx
+ * @description Displays a single post thread including its contents, author details,
+ * and a real-time nested comment section.
+ *
+ * Features:
+ *  - Fetches post details and comments concurrently
+ *  - Renders a recursive comment tree
+ *  - Like and Share action buttons
+ *  - Floating Action Button (FAB) to reply to the main post
+ */
+
 import { motion } from 'framer-motion';
 import { Heart, MessageCircle, MessageSquare, Share2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
@@ -12,16 +24,25 @@ import { buildCommentTree } from '../utils/buildCommentTree';
 import { timeAgo } from '../utils/common';
 import { getPost } from '../utils/post';
 
+/**
+ * PostDetails
+ *
+ * Fetches and displays a specific post and its descendants (comments).
+ */
 const PostDetails: React.FC = () => {
+    // ── Route & Auth State ───────────────────────────────────────────────
     const { id } = useParams();
     const navigate = useNavigate();
     const { user } = useAuth();
+    
+    // ── Data State ───────────────────────────────────────────────────────
     const [post, setPost] = useState<any>(null);
     const [comments, setComments] = useState<any[]>([]);
     const [commentTree, setCommentTree] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const postId = id;
 
+    /** Fetch post data and its comments concurrently */
     const fetchData = async () => {
         if (!postId) return;
         setLoading(true);
@@ -36,6 +57,7 @@ const PostDetails: React.FC = () => {
     useEffect(() => { fetchData(); }, [postId]);
     useEffect(() => { if (comments.length > 0) setCommentTree(buildCommentTree(comments)); }, [comments]);
 
+    /** Optimistically handle the like action for the current post */
     const handleLike = async () => {
         if (!post || !user) return;
         const userId = user.id;
@@ -48,13 +70,15 @@ const PostDetails: React.FC = () => {
         try { await likePost(postId!); } catch (err) { console.error(err); }
     };
 
+    // ── Render Helpers ───────────────────────────────────────────────────
+
     if (loading) return (
         <ScreenWrapper>
             <div className="flex flex-col h-full">
                 <Header transparent title="Thread" />
                 <div className="flex-1 flex flex-col items-center justify-center gap-3">
                     <div className="spinner" />
-                    <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}>Loading</span>
+                    <span className="text-[11px] font-bold uppercase tracking-widest" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>Loading</span>
                 </div>
             </div>
         </ScreenWrapper>
@@ -83,7 +107,7 @@ const PostDetails: React.FC = () => {
                 <Header transparent title="Thread" />
 
                 <div className="flex-1 overflow-y-auto no-scrollbar px-4 py-4" style={{ paddingBottom: '88px' }}>
-                    {/* Main Post */}
+                    {/* ── Main Post ── */}
                     <motion.div
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -100,13 +124,13 @@ const PostDetails: React.FC = () => {
                                     >
                                         {post.user?.name}
                                     </span>
-                                    <span className="text-[12px] font-semibold uppercase tracking-tight" style={{ color: 'var(--color-text-muted)', opacity: 0.6 }}>
+                                    <span className="text-[12px] font-semibold uppercase tracking-tight" style={{ color: 'var(--color-text-muted)', opacity: 1 }}>
                                         @{post.user?.username?.toLowerCase()}
                                     </span>
                                 </div>
                             </div>
                             <span
-                                className="text-[11px] font-bold uppercase tracking-wide px-3 py-1.5 rounded-full"
+                                className="text-[10px] font-bold uppercase tracking-wide px-2 py-1 rounded-full"
                                 style={{ backgroundColor: 'var(--color-separator)', color: 'var(--color-text-muted)' }}
                             >
                                 {timeAgo(post.createdAt)}
@@ -128,7 +152,7 @@ const PostDetails: React.FC = () => {
                             </motion.div>
                         )}
 
-                        {/* Actions row */}
+                        {/* ── Actions row ── */}
                         <div className="flex flex-row items-center justify-between pt-4 border-t" style={{ borderColor: 'var(--color-separator)' }}>
                             <div className="flex flex-row items-center gap-6">
                                 <button onClick={handleLike} className="flex flex-row items-center gap-2 active-scale group">
@@ -144,21 +168,21 @@ const PostDetails: React.FC = () => {
                                         {post.likesCount || 0}
                                     </span>
                                 </button>
-                                <div className="flex flex-row items-center gap-2" style={{ opacity: 0.4 }}>
+                                <div className="flex flex-row items-center gap-2" style={{ opacity: 0.8 }}>
                                     <MessageSquare size={22} strokeWidth={2} style={{ color: 'var(--color-text-muted)' }} />
                                     <span className="text-[15px] font-bold" style={{ color: 'var(--color-text-muted)' }}>{post.commentsCount || 0}</span>
                                 </div>
                             </div>
                             <button className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 active-scale transition-all">
-                                <Share2 size={20} strokeWidth={2} style={{ color: 'var(--color-text-muted)', opacity: 0.5 }} />
+                                <Share2 size={20} strokeWidth={2} style={{ color: 'var(--color-text-muted)', opacity: 0.8 }} />
                             </button>
                         </div>
                     </motion.div>
 
-                    {/* Comments Section */}
+                    {/* ── Comments Section ── */}
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-row items-center justify-between">
-                            <h2 className="text-[12px] font-outfit font-black uppercase tracking-[0.2em]" style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}>Replies</h2>
+                            <h2 className="text-[12px] font-outfit font-black uppercase tracking-[0.2em]" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>Replies</h2>
                             <div className="h-px flex-1 ml-4" style={{ backgroundColor: 'var(--color-separator)' }} />
                         </div>
 
@@ -177,7 +201,7 @@ const PostDetails: React.FC = () => {
                         ) : (
                             <div className="py-16 flex flex-col items-center justify-center text-center px-10">
                                 <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--color-separator)' }}>
-                                    <MessageCircle size={28} style={{ color: 'var(--color-text-muted)', opacity: 0.3 }} />
+                                    <MessageCircle size={28} style={{ color: 'var(--color-text-muted)', opacity: 1 }} />
                                 </div>
                                 <h4 className="text-[15px] font-bold mb-1" style={{ color: 'var(--color-text)' }}>Be the first to reply</h4>
                                 <p className="text-[13px]" style={{ color: 'var(--color-text-muted)' }}>Start the conversation below</p>
@@ -186,7 +210,7 @@ const PostDetails: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Reply FAB */}
+                {/* ── Reply FAB ── */}
                 <motion.button
                     initial={{ scale: 0, opacity: 0, y: 40 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}

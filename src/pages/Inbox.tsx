@@ -1,3 +1,13 @@
+/**
+ * @file Inbox.tsx
+ * @description Lists active chats and allows searching for new users to message.
+ *
+ * Features:
+ *  - Search bar to find users by username
+ *  - Displays conversation list with unread counts and last message
+ *  - Online status indicators for active users
+ */
+
 import { MessageSquare, Search, X } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -8,17 +18,28 @@ import { useAuth } from '../contexts/authContext';
 import { getChatsMetadata } from '../utils/inbox';
 import { searchUsers } from '../utils/search';
 
+/**
+ * Inbox
+ *
+ * Displays all active messages. Supports searching to initiate new chats.
+ */
 const Inbox: React.FC = () => {
+    // ── Routing & Auth ───────────────────────────────────────────────────
     const navigate = useNavigate();
     const { user } = useAuth();
+    
+    // ── Form State ───────────────────────────────────────────────────────
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<any[]>([]);
+    
+    // ── Data State ───────────────────────────────────────────────────────
     const [messages, setMessages] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [isSearching, setIsSearching] = useState(false);
 
     useEffect(() => { fetchData(); }, []);
 
+    /** Fetch user's existing chat history */
     const fetchData = async () => {
         setLoading(true);
         try { const res = await getChatsMetadata(); setMessages(res || []); }
@@ -26,6 +47,7 @@ const Inbox: React.FC = () => {
         finally { setLoading(false); }
     };
 
+    /** Query users by username */
     const handleSearch = async () => {
         if (!searchQuery.trim()) return;
         setLoading(true); setIsSearching(true);
@@ -34,9 +56,13 @@ const Inbox: React.FC = () => {
         finally { setLoading(false); }
     };
 
+    /** Clear current search query and reset view */
     const clearSearch = () => { setSearchQuery(''); setIsSearching(false); setSearchResults([]); };
 
+    /** Navigate to an existing chat screen */
     const handleChatPress = (chat: any) => navigate(`/chat/${chat.slug}`);
+    
+    /** Initialise or navigate to a new chat with a searched user */
     const handleUserPress = (targetUser: any) => {
         if (!user || !targetUser) return;
         const chatPath = [user.id, targetUser._id].sort().join('_');
@@ -51,7 +77,7 @@ const Inbox: React.FC = () => {
                 <Header title="Messages" showBackButton={true} />
 
                 <div className="px-4 py-3 flex flex-col gap-4">
-                    {/* Search */}
+                    {/* ── Search Bar ── */}
                     <div className="relative">
                         <div className="absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--color-text-muted)' }}>
                             <Search size={17} />
@@ -76,7 +102,7 @@ const Inbox: React.FC = () => {
                         )}
                     </div>
 
-                    {/* List */}
+                    {/* ── Chat / Search Results List ── */}
                     <div className="flex flex-col">
                         {loading && !listData.length ? (
                             <div className="flex justify-center py-10">
@@ -118,7 +144,7 @@ const Inbox: React.FC = () => {
                                                         <span className="font-bold text-[15px] truncate" style={{ color: 'var(--color-text)' }}>
                                                             {otherUser?.username || 'Unknown'}
                                                         </span>
-                                                        <span className="text-[11px] font-semibold ml-2 shrink-0" style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}>
+                                                        <span className="text-[11px] font-semibold ml-2 shrink-0" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>
                                                             {item.timestamp}
                                                         </span>
                                                     </div>
@@ -141,7 +167,7 @@ const Inbox: React.FC = () => {
                         ) : (
                             <div className="flex flex-col items-center justify-center py-20 text-center px-8">
                                 <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4" style={{ backgroundColor: 'var(--color-separator)' }}>
-                                    <MessageSquare size={32} style={{ color: 'var(--color-text-muted)', opacity: 0.3 }} />
+                                    <MessageSquare size={32} style={{ color: 'var(--color-text-muted)', opacity: 1 }} />
                                 </div>
                                 <h3 className="text-[16px] font-black mb-1.5" style={{ color: 'var(--color-text)' }}>
                                     {isSearching ? 'No users found' : 'No messages yet'}

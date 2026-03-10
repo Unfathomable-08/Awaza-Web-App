@@ -20,7 +20,7 @@
   /* Text */
   --color-text:           #000000;
   --color-text-light:     #3A3A3C;
-  --color-text-muted:     #8E8E93;
+  --color-text-muted:     #757575;
   --color-text-placeholder: #C7C7CC;
 
   /* Semantic */
@@ -30,9 +30,9 @@
   --color-info:           #007AFF;
 
   /* UI Elements */
-  --color-border:         #E5E5EA;
-  --color-separator:      #F2F2F7;
-  --color-input-bg:       #EFEFEF;
+  --color-border:         #c9c9c9;
+  --color-separator:      #dedede;
+  --color-input-bg:       #d9d9d9;
   --color-overlay:        rgba(0,0,0,0.4);
 
   /* Radius */

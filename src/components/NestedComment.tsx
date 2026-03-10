@@ -74,7 +74,7 @@ export const NestedComment: React.FC<NestedCommentProps> = ({
             {/* ── Vertical thread line ── */}
             {showLine && (
                 <div
-                    className="absolute left-4 rounded-full bg-app border-l-2 border-sep opacity-50"
+                    className="absolute -left-3 rounded-full bg-app border-l-2 border-sep opacity-50"
                     style={{
                         width: 1.5,
                         /* Extend to bottom when there are more siblings, else stop at avatar centre */
@@ -85,7 +85,7 @@ export const NestedComment: React.FC<NestedCommentProps> = ({
             )}
 
             {/* ── Comment row ── */}
-            <div className={`flex flex-row mt-3 ${depth === 0 ? '' : 'pl-5'}`}>
+            <div className={`flex flex-row mt-3 ${depth === 0 ? '' : 'pl-2'}`}>
 
                 {/* Column: avatar + continuation line */}
                 <div className="flex flex-col items-center">

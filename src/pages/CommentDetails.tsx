@@ -1,3 +1,13 @@
+/**
+ * @file CommentDetails.tsx
+ * @description Compose screen for writing a new comment or reply.
+ *
+ * Features:
+ *  - Character count tracking and dynamic colour warnings
+ *  - Save button disables automatically if empty or over limit
+ *  - Supports top-level comments and nested replies
+ */
+
 import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,18 +20,28 @@ import { createComment } from '../utils/actions';
 
 const MAX_CHARS = 380;
 
+/**
+ * CommentDetails
+ *
+ * Provides a dedicated full-screen text area for composing comments or replies.
+ */
 const CommentDetails: React.FC = () => {
+    // ── Routing & Auth State ──────────────────────────────────────────────
     const { id } = useParams();
     const navigate = useNavigate();
+    const { user } = useAuth();
+    
+    // ── Form State ───────────────────────────────────────────────────────
     const [text, setText] = useState('');
     const [loading, setLoading] = useState(false);
-    const { user } = useAuth();
 
+    // ── Derived State ────────────────────────────────────────────────────
     const [postId, parentCommentId] = (id || '').split('_');
     const isOverLimit = text.length > MAX_CHARS;
     const isEmpty = text.trim().length === 0;
     const isDisabled = isEmpty || isOverLimit || loading;
 
+    /** Submit the payload to the DB */
     const handlePost = async () => {
         if (isDisabled || !postId) return;
         setLoading(true);
@@ -54,18 +74,20 @@ const CommentDetails: React.FC = () => {
                     transition={{ duration: 0.4 }}
                     className="flex-1 px-5 pt-5 overflow-y-auto no-scrollbar"
                 >
+                    {/* ── User Context Header ── */}
                     <div className="flex flex-row items-center gap-3 mb-5">
                         <Avatar uri={user?.avatar} size={40} />
                         <div className="flex flex-col">
                             <span className="font-outfit font-black text-[16px] tracking-tight leading-none mb-0.5" style={{ color: 'var(--color-text)' }}>
                                 {user?.name}
                             </span>
-                            <span className="text-[12px] font-bold uppercase tracking-tight" style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}>
+                            <span className="text-[12px] font-bold uppercase tracking-tight" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>
                                 @{user?.username || 'user'}
                             </span>
                         </div>
                     </div>
 
+                    {/* ── Text Input Area ── */}
                     <textarea
                         autoFocus
                         placeholder="Share your thoughts..."
@@ -79,7 +101,7 @@ const CommentDetails: React.FC = () => {
                     />
                 </motion.div>
 
-                {/* Char Counter */}
+                {/* ── Char Counter Panel ── */}
                 <div className="px-5 py-3 flex flex-row items-center justify-end border-t" style={{ borderColor: 'var(--color-separator)' }}>
                     <span
                         className="text-[12px] font-semibold"

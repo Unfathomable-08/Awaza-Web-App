@@ -79,7 +79,7 @@ const Profile: React.FC = () => {
                             <h2 className="text-[24px] font-outfit font-black tracking-tight" style={{ color: 'var(--color-text)' }}>
                                 {profile?.name}
                             </h2>
-                            <span className="text-[13px] font-bold uppercase tracking-wider mt-0.5" style={{ color: 'var(--color-text-muted)', opacity: 0.6 }}>
+                            <span className="text-[13px] font-bold uppercase tracking-wider mt-0.5" style={{ color: 'var(--color-text-muted)', opacity: 1 }}>
                                 @{profile?.username}
                             </span>
                         </motion.div>
@@ -103,12 +103,12 @@ const Profile: React.FC = () => {
                         >
                             <div className="flex flex-col items-center">
                                 <span className="text-[20px] font-outfit font-black" style={{ color: 'var(--color-text)' }}>1.2k</span>
-                                <span className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}>Followers</span>
+                                <span className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>Followers</span>
                             </div>
                             <div className="w-px h-7" style={{ backgroundColor: 'var(--color-border)' }} />
                             <div className="flex flex-col items-center">
                                 <span className="text-[20px] font-outfit font-black" style={{ color: 'var(--color-text)' }}>482</span>
-                                <span className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}>Following</span>
+                                <span className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>Following</span>
                             </div>
                         </motion.div>
 
@@ -151,7 +151,7 @@ const Profile: React.FC = () => {
                     {/* Posts */}
                     <div className="border-t" style={{ borderColor: 'var(--color-separator)' }}>
                         <div className="px-4 py-3 flex flex-row items-center gap-3">
-                            <h3 className="text-[11px] font-outfit font-black uppercase tracking-[0.2em]" style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}>Posts</h3>
+                            <h3 className="text-[11px] font-outfit font-black uppercase tracking-[0.2em]" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>Posts</h3>
                             <div className="h-px flex-1" style={{ backgroundColor: 'var(--color-separator)' }} />
                         </div>
 
@@ -164,7 +164,7 @@ const Profile: React.FC = () => {
                         ) : (
                             <div className="py-16 flex flex-col items-center justify-center text-center px-10">
                                 <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-3" style={{ backgroundColor: 'var(--color-separator)' }}>
-                                    <span className="text-xl" style={{ opacity: 0.3 }}>📸</span>
+                                    <span className="text-xl" style={{ opacity: 1 }}>📸</span>
                                 </div>
                                 <p className="text-[14px] font-medium" style={{ color: 'var(--color-text-muted)' }}>No posts yet</p>
                             </div>

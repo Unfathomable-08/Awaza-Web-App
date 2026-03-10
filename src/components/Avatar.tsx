@@ -39,22 +39,18 @@ const Avatar: React.FC<AvatarProps> = ({
 }) => {
     const src = uri || DEFAULT_AVATAR;
 
-    // Proportional radius gives a consistent squircle at any size
-    const radius = Math.round(size * 0.38);
-
     /** Core image container — shared by both the plain and button variants */
     const imageBox = (
         <div
             className={`
                 relative overflow-hidden shrink-0
                 flex items-center justify-center
-                bg-input border border-card
+                bg-input border border-card rounded-full
                 ${className}
             `}
             style={{
                 width: size,
                 height: size,
-                borderRadius: radius,
             }}
         >
             <img
@@ -78,9 +74,8 @@ const Avatar: React.FC<AvatarProps> = ({
                 className="
                     p-0 border-none bg-transparent
                     cursor-pointer outline-none
-                    active-scale transition-transform shrink-0
+                    active-scale transition-transform shrink-0 rounded-full
                 "
-                style={{ borderRadius: radius + 2 }}
             >
                 {imageBox}
             </button>

@@ -73,7 +73,7 @@ const ComposePost: React.FC = () => {
                         <Avatar uri={user?.avatar} size={42} />
                         <div className="flex flex-col justify-center">
                             <span className="font-bold text-[15px]" style={{ color: 'var(--color-text)' }}>{user?.name}</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}>Public</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>Public</span>
                         </div>
                     </div>
 
