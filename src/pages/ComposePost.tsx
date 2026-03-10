@@ -6,17 +6,16 @@ import Avatar from '../components/Avatar';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import ScreenWrapper from '../components/ScreenWrapper';
-import { colors } from '../constants/Colors';
 import { useAuth } from '../contexts/authContext';
 import { createPost } from '../utils/post';
 
 const MAX_CHARS = 380;
-const IMGBB_API_KEY = "1a385d5be9971dda6af6d90952c6e372";
+const IMGBB_API_KEY = '1a385d5be9971dda6af6d90952c6e372';
 
 const ComposePost: React.FC = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
-    const [text, setText] = useState("");
+    const [text, setText] = useState('');
     const [image, setImage] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -29,51 +28,32 @@ const ComposePost: React.FC = () => {
         const file = e.target.files?.[0];
         if (file) {
             const reader = new FileReader();
-            reader.onloadend = () => {
-                setImage(reader.result as string);
-            };
+            reader.onloadend = () => setImage(reader.result as string);
             reader.readAsDataURL(file);
         }
     };
 
-    const removeImage = () => setImage(null);
-
     const handlePost = async () => {
         if (isDisabled) return;
         setLoading(true);
-
         try {
-            let imageUrl = "";
-
+            let imageUrl = '';
             if (image && image.startsWith('data:image')) {
                 const base64Data = image.split(',')[1];
                 const formData = new FormData();
-                formData.append("image", base64Data);
-
-                const res = await axios.post(
-                    `https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`,
-                    formData
-                );
+                formData.append('image', base64Data);
+                const res = await axios.post(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, formData);
                 imageUrl = res.data.data.url;
             }
-
-            await createPost({
-                content: text.trim(),
-                image: imageUrl,
-                isPublic: true,
-            });
-
+            await createPost({ content: text.trim(), image: imageUrl, isPublic: true });
             navigate('/home');
         } catch (error: any) {
-            console.error("Post Error:", error);
-            alert(error.message || "Failed to create post");
-        } finally {
-            setLoading(false);
-        }
+            alert(error.message || 'Failed to create post');
+        } finally { setLoading(false); }
     };
 
     return (
-        <ScreenWrapper bg="white">
+        <ScreenWrapper>
             <div className="flex flex-col min-h-full">
                 <Header
                     title="New Post"
@@ -83,19 +63,17 @@ const ComposePost: React.FC = () => {
                             onClick={handlePost}
                             loading={loading}
                             disabled={isDisabled}
-                            className="!h-9 !rounded-full !px-5 !w-auto"
-                            textClassName="!text-[14px]"
-                            hasShadow={false}
+                            className="!h-8 !rounded-full !px-4 !w-auto !text-[13px]"
                         />
                     }
                 />
 
-                <div className="flex-1 overflow-y-auto px-6 py-8">
-                    <div className="flex flex-row gap-4 mb-8">
-                        <Avatar uri={user?.avatar} size={50} rounded={18} />
+                <div className="flex-1 overflow-y-auto px-4 py-5">
+                    <div className="flex flex-row gap-3 mb-5">
+                        <Avatar uri={user?.avatar} size={42} />
                         <div className="flex flex-col justify-center">
-                            <span className="font-bold text-[17px]" style={{ color: colors.text }}>{user?.name}</span>
-                            <span className="text-xs font-bold opacity-40 uppercase tracking-wider">Public Post</span>
+                            <span className="font-bold text-[15px]" style={{ color: 'var(--color-text)' }}>{user?.name}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-wider" style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}>Public</span>
                         </div>
                     </div>
 
@@ -104,55 +82,49 @@ const ComposePost: React.FC = () => {
                         placeholder="What's on your mind?"
                         value={text}
                         onChange={(e) => setText(e.target.value)}
-                        className="w-full min-h-[160px] text-xl font-medium bg-transparent outline-none resize-none placeholder:opacity-30"
-                        style={{ color: colors.text }}
+                        className="w-full min-h-[140px] text-[17px] font-normal bg-transparent outline-none resize-none leading-relaxed"
+                        style={{
+                            color: isOverLimit ? 'var(--color-error)' : 'var(--color-text)',
+                            caretColor: 'var(--color-primary)',
+                        }}
                     />
 
                     {image && (
-                        <div className="relative mt-6 rounded-3xl overflow-hidden shadow-xl group">
-                            <img
-                                src={image}
-                                alt="Preview"
-                                className="w-full aspect-video object-cover"
-                            />
+                        <div className="relative mt-4 rounded-2xl overflow-hidden shadow-soft group border" style={{ borderColor: 'var(--color-card-border)' }}>
+                            <img src={image} alt="Preview" className="w-full aspect-video object-cover" />
                             <button
-                                onClick={removeImage}
-                                className="absolute top-4 right-4 p-2 bg-black/50 backdrop-blur-md text-white rounded-full hover:bg-black/70 transition-all active:scale-90"
+                                onClick={() => setImage(null)}
+                                className="absolute top-3 right-3 p-2 bg-black/50 backdrop-blur-sm text-white rounded-full hover:bg-black/70 transition-all active:scale-90"
                             >
-                                <X size={20} />
+                                <X size={16} />
                             </button>
                         </div>
                     )}
                 </div>
 
                 {/* Toolbar */}
-                <div className="sticky bottom-0 bg-white border-t border-gray-100 p-4 flex flex-row items-center justify-between">
-                    <div className="flex flex-row items-center gap-2">
-                        <button
-                            onClick={() => fileInputRef.current?.click()}
-                            className="p-3 rounded-2xl bg-gray-50 text-primary active:scale-95 transition-all text-blue-500"
-                            style={{ color: colors.primary }}
-                        >
-                            <ImageIcon size={26} />
-                        </button>
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleImagePick}
-                            accept="image/*"
-                            className="hidden"
-                        />
-                    </div>
+                <div
+                    className="sticky bottom-0 border-t px-4 py-3 flex flex-row items-center justify-between"
+                    style={{ backgroundColor: 'var(--color-bg)', borderColor: 'var(--color-separator)' }}
+                >
+                    <button
+                        onClick={() => fileInputRef.current?.click()}
+                        className="p-2.5 rounded-xl active:scale-95 transition-all"
+                        style={{ color: 'var(--color-primary)', backgroundColor: 'color-mix(in srgb, var(--color-primary) 8%, transparent)' }}
+                    >
+                        <ImageIcon size={22} />
+                    </button>
+                    <input type="file" ref={fileInputRef} onChange={handleImagePick} accept="image/*" className="hidden" />
 
-                    <div className="flex flex-row items-center gap-1">
-                        <span
-                            className={`text-sm font-bold ${text.length > MAX_CHARS ? 'text-rose-500' : 'opacity-40'}`}
-                        >
-                            {text.length}
-                        </span>
-                        <span className="text-sm font-black opacity-20">/</span>
-                        <span className="text-sm font-bold opacity-20">{MAX_CHARS}</span>
-                    </div>
+                    <span
+                        className="text-[12px] font-semibold"
+                        style={{
+                            color: isOverLimit ? 'var(--color-error)' : 'var(--color-text-muted)',
+                            opacity: isOverLimit ? 1 : 0.5,
+                        }}
+                    >
+                        {text.length} / {MAX_CHARS}
+                    </span>
                 </div>
             </div>
         </ScreenWrapper>

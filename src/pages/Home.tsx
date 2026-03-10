@@ -1,12 +1,11 @@
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
-import { BiSolidMessageRoundedDetail } from "react-icons/bi";
+import { BiSolidMessageRoundedDetail } from 'react-icons/bi';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Feed from '../components/Feed';
 import Header from '../components/Header';
 import ScreenWrapper from '../components/ScreenWrapper';
-import { colors } from '../constants/Colors';
 import { useAuth } from '../contexts/authContext';
 import { loadFeed } from '../utils/feed';
 
@@ -19,70 +18,55 @@ const Home: React.FC = () => {
     const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
-        // Initial load
         setHasMore(true);
-        loadFeed({
-            isLoadMore: false,
-            loading,
-            setLoading,
-            refreshing,
-            setRefreshing,
-            hasMore,
-            setHasMore,
-            setPosts,
-        });
+        loadFeed({ isLoadMore: false, loading, setLoading, refreshing, setRefreshing, hasMore, setHasMore, setPosts });
     }, []);
 
     return (
-        <ScreenWrapper bg={colors.background}>
-            <div className="flex flex-col h-full bg-white relative overflow-hidden">
-                {/* Premium Header */}
+        <ScreenWrapper>
+            <div className="flex flex-col h-full relative">
                 <Header
                     showBackButton={false}
                     centerElement={
-                        <h1 className="text-4xl font-outfit font-black tracking-tighter" style={{ color: colors.primary }}>
+                        <h1
+                            className="text-[26px] font-outfit font-black tracking-tight"
+                            style={{ color: 'var(--color-primary)' }}
+                        >
                             Awaza
                         </h1>
                     }
                     rightElement={
-                        <div className="flex flex-row items-center gap-3">
-                            <button
-                                onClick={() => navigate('/inbox')}
-                                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 active:scale-90 transition-all text-gray-700"
-                            >
-                                <BiSolidMessageRoundedDetail style={{color: colors.primary}} size={30}/>
-                            </button>
-                        </div>
+                        <button
+                            onClick={() => navigate('/inbox')}
+                            className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 active:scale-90 transition-all"
+                        >
+                            <BiSolidMessageRoundedDetail style={{ color: 'var(--color-primary)' }} size={24} />
+                        </button>
                     }
                 />
 
-                {/* Feed container */}
                 <div className="flex-1 overflow-hidden relative">
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5 }}
+                        transition={{ duration: 0.4 }}
                         className="h-full"
                     >
-                        <Feed
-                            data={posts}
-                            loading={loading}
-                            user={user}
-                        />
+                        <Feed data={posts} loading={loading} user={user} />
                     </motion.div>
 
                     {/* Floating Action Button */}
                     <motion.button
                         whileHover={{ scale: 1.05, y: -2 }}
                         whileTap={{ scale: 0.95 }}
-                        initial={{ scale: 0, opacity: 0, y: 50 }}
+                        initial={{ scale: 0, opacity: 0, y: 40 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5, type: "spring", stiffness: 260, damping: 20 }}
+                        transition={{ delay: 0.4, type: 'spring', stiffness: 260, damping: 20 }}
                         onClick={() => navigate('/compose-post')}
-                        className="fixed bottom-8 right-3 w-14 h-14 rounded-full flex items-center justify-center shadow-premium text-white z-40 active:brightness-90 transition-all"
-                        style={{ backgroundColor: colors.primary }}
+                        className="fixed bottom-6 right-4 w-14 h-14 rounded-full flex items-center justify-center text-white z-40 shadow-premium active:brightness-90 transition-all"
+                        style={{ backgroundColor: 'var(--color-primary)' }}
                     >
-                        <Plus size={26} strokeWidth={3} />
+                        <Plus size={24} strokeWidth={2.5} />
                     </motion.button>
                 </div>
             </div>

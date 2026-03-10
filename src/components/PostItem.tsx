@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { Heart, MessageCircle, MoreHorizontal, Share2 } from 'lucide-react';
 import React, { memo, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { colors } from '../constants/Colors';
 import { likePost } from '../utils/actions';
 import { timeAgo } from '../utils/common';
 import Avatar from './Avatar';
@@ -46,7 +45,6 @@ const PostItem: React.FC<PostItemProps> = ({ item, currentUser, index = 0 }) => 
         } catch (error) {
             setLiked(!newLiked);
             setLikesCount(prev => !newLiked ? prev + 1 : prev - 1);
-            console.error("Failed to like post", error);
         }
     };
 
@@ -55,25 +53,25 @@ const PostItem: React.FC<PostItemProps> = ({ item, currentUser, index = 0 }) => 
     return (
         <motion.div
             layout
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: index * 0.04, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             onClick={openPostDetails}
-            className="flex flex-col bg-white border-b border-gray-100/50 p-2 cursor-pointer active:bg-gray-50/50 transition-colors"
+            className="flex flex-col bg-white border-b cursor-pointer active:bg-gray-50/80 transition-colors px-4 py-3"
+            style={{ borderColor: 'var(--color-separator)' }}
         >
             {/* User Info Header */}
-            <div className="flex flex-row justify-between items-center mb-3">
-                <div className="flex flex-row items-center gap-3">
+            <div className="flex flex-row justify-between items-center mb-2.5">
+                <div className="flex flex-row items-center gap-2.5">
                     <Avatar
-                        size={44}
+                        size={40}
                         uri={item?.user?.avatar}
-                        rounded={18}
                         onClick={() => navigate(`/profile/${item?.user?._id || item?.user?.id}`)}
                     />
                     <div className="flex flex-col">
                         <span
-                            className="font-outfit font-bold tracking-tight leading-none mb-1 hover:text-primary transition-colors"
-                            style={{ color: colors.text }}
+                            className="font-outfit font-bold text-[15px] tracking-tight leading-tight hover:text-primary transition-colors"
+                            style={{ color: 'var(--color-text)' }}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 navigate(`/profile/${item?.user?._id || item?.user?.id}`);
@@ -81,35 +79,45 @@ const PostItem: React.FC<PostItemProps> = ({ item, currentUser, index = 0 }) => 
                         >
                             {item?.user?.name}
                         </span>
-                        <span className="text-xs font-medium opacity-40" style={{ color: colors.text }}>
+                        <span
+                            className="text-[12px] font-medium"
+                            style={{ color: 'var(--color-text-muted)' }}
+                        >
                             {createdAt}
                         </span>
                     </div>
                 </div>
 
-                <button className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 active:scale-90 transition-all">
-                    <MoreHorizontal size={20} className="opacity-40" />
+                <button
+                    className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-black/5 active:scale-90 transition-all"
+                    onClick={e => e.stopPropagation()}
+                >
+                    <MoreHorizontal size={18} style={{ color: 'var(--color-text-muted)' }} />
                 </button>
             </div>
 
             {/* Post Content */}
-            <div className="flex flex-col gap-4 mb-1">
+            <div className="flex flex-col gap-3 mb-1">
                 {item?.content && (
-                    <p className="text-[16px] leading-[1.6] font-medium" style={{ color: colors.textLight }}>
+                    <p
+                        className="text-[15px] leading-[1.55] font-normal"
+                        style={{ color: 'var(--color-text-light)' }}
+                    >
                         {item?.content}
                     </p>
                 )}
 
                 {item?.image && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.98 }}
+                        initial={{ opacity: 0, scale: 0.99 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="w-full rounded-3xl overflow-hidden bg-gray-50 border border-gray-100/50 shadow-soft"
+                        className="w-full rounded-2xl overflow-hidden shadow-soft border"
+                        style={{ borderColor: 'var(--color-card-border)' }}
                     >
                         <img
                             src={item?.image}
                             alt="Post Content"
-                            className="w-full h-auto object-cover max-h-125"
+                            className="w-full h-auto object-cover max-h-96"
                             loading="lazy"
                         />
                     </motion.div>
@@ -117,42 +125,49 @@ const PostItem: React.FC<PostItemProps> = ({ item, currentUser, index = 0 }) => 
             </div>
 
             {/* Interaction Footer */}
-            <div className="flex flex-row items-center gap-2">
+            <div className="flex flex-row items-center gap-1 mt-0.5 -ml-2">
+                {/* Like */}
                 <button
                     onClick={handleLike}
                     className="flex flex-row items-center group outline-none"
                 >
                     <motion.div
                         whileTap={{ scale: 1.4 }}
-                        transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                        className={`w-10 h-10 flex items-center justify-center rounded-full transition-colors ${liked ? 'bg-error/5' : 'group-hover:bg-error/5'}`}
+                        transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                        className="w-9 h-9 flex items-center justify-center rounded-full transition-colors"
+                        style={liked ? { backgroundColor: 'color-mix(in srgb, var(--color-error) 8%, transparent)' } : {}}
                     >
                         <Heart
-                            size={22}
-                            strokeWidth={liked ? 0 : 2.5}
-                            className={`transition-all ${liked ? 'fill-error scale-110' : 'group-hover:stroke-error'}`}
-                            style={{ color: liked ? colors.error : colors.textMuted }}
+                            size={19}
+                            strokeWidth={liked ? 0 : 2}
+                            style={{
+                                color: liked ? 'var(--color-error)' : 'var(--color-text-muted)',
+                                fill: liked ? 'var(--color-error)' : 'transparent',
+                                transition: 'all 0.15s ease',
+                            }}
                         />
                     </motion.div>
                     <span
-                        className={`text-sm font-bold transition-colors ${liked ? 'text-error' : 'opacity-40 group-hover:opacity-100'}`}
-                        style={{ color: liked ? colors.error : colors.text }}
+                        className="text-[13px] font-semibold"
+                        style={{ color: liked ? 'var(--color-error)' : 'var(--color-text-muted)' }}
                     >
-                        {likesCount}
+                        {likesCount > 0 ? likesCount : ''}
                     </span>
                 </button>
 
+                {/* Comment */}
                 <button className="flex flex-row items-center group outline-none">
-                    <div className="w-10 h-10 flex items-center justify-center rounded-full group-hover:bg-info/5 transition-colors">
-                        <MessageCircle size={22} strokeWidth={2.5} className="group-hover:stroke-info transition-colors" style={{ color: colors.textMuted }} />
+                    <div className="w-9 h-9 flex items-center justify-center rounded-full transition-colors">
+                        <MessageCircle size={19} strokeWidth={2} style={{ color: 'var(--color-text-muted)' }} />
                     </div>
-                    <span className="text-sm font-bold opacity-40 group-hover:opacity-100 transition-colors" style={{ color: colors.text }}>
-                        {item?.commentsCount || 0}
+                    <span className="text-[13px] font-semibold" style={{ color: 'var(--color-text-muted)' }}>
+                        {item?.commentsCount > 0 ? item.commentsCount : ''}
                     </span>
                 </button>
 
-                <button className="ml-auto w-10 h-10 flex items-center justify-center rounded-full hover:bg-success/5 group transition-colors outline-none">
-                    <Share2 size={22} strokeWidth={2.5} className="group-hover:stroke-success transition-colors" style={{ color: colors.textMuted }} />
+                {/* Share */}
+                <button className="ml-auto w-9 h-9 flex items-center justify-center rounded-full transition-colors outline-none">
+                    <Share2 size={18} strokeWidth={2} style={{ color: 'var(--color-text-muted)' }} />
                 </button>
             </div>
         </motion.div>

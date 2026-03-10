@@ -9,15 +9,26 @@ interface FeedProps {
 
 const Feed: React.FC<FeedProps> = ({ data, loading = false, user }) => {
     return (
-        <div className="flex-1 overflow-y-auto no-scrollbar pb-32 h-full">
+        <div className="flex-1 overflow-y-auto no-scrollbar h-full" style={{ paddingBottom: '88px' }}>
             {data.length === 0 && !loading && (
-                <div className="flex flex-col items-center justify-center pt-24 px-12 text-center">
-                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-                        <span className="text-4xl text-gray-300">👋</span>
+                <div className="flex flex-col items-center justify-center pt-20 px-10 text-center">
+                    <div
+                        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
+                        style={{ backgroundColor: 'var(--color-separator)' }}
+                    >
+                        <span className="text-3xl">👋</span>
                     </div>
-                    <h3 className="text-xl font-outfit font-bold mb-2">Welcome to your feed!</h3>
-                    <p className="text-muted text-[15px] leading-relaxed">
-                        Start following people or create your first post to see what's happening.
+                    <h3
+                        className="text-[17px] font-outfit font-bold mb-1.5"
+                        style={{ color: 'var(--color-text)' }}
+                    >
+                        Welcome to your feed!
+                    </h3>
+                    <p
+                        className="text-[14px] font-medium leading-relaxed"
+                        style={{ color: 'var(--color-text-muted)' }}
+                    >
+                        Start following people or create your first post.
                     </p>
                 </div>
             )}
@@ -34,9 +45,14 @@ const Feed: React.FC<FeedProps> = ({ data, loading = false, user }) => {
             </div>
 
             {loading && (
-                <div className="flex flex-col items-center justify-center p-12 gap-4">
-                    <div className="w-10 h-10 border-[3px] border-primary border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-[13px] font-bold opacity-30 uppercase tracking-widest">Loading Feed</span>
+                <div className="flex flex-col items-center justify-center py-10 gap-3">
+                    <div className="spinner" />
+                    <span
+                        className="text-[11px] font-bold uppercase tracking-widest"
+                        style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}
+                    >
+                        Loading
+                    </span>
                 </div>
             )}
         </div>

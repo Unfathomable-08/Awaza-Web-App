@@ -1,5 +1,4 @@
 import React from 'react';
-import { colors } from '../constants/Colors';
 
 interface ScreenWrapperProps {
     children: React.ReactNode;
@@ -9,13 +8,16 @@ interface ScreenWrapperProps {
 
 const ScreenWrapper: React.FC<ScreenWrapperProps> = ({
     children,
-    bg = colors.background,
+    bg,
     className = ''
 }) => {
     return (
         <div
-            className={`flex-1 flex flex-col w-full relative min-h-svh ${className}`}
-            style={{ backgroundColor: bg }}
+            className={`flex-1 flex flex-col w-full relative ${className}`}
+            style={{
+                backgroundColor: bg || 'var(--color-bg)',
+                minHeight: '100dvh',
+            }}
         >
             {children}
         </div>

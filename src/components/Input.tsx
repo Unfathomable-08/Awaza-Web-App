@@ -1,5 +1,4 @@
 import React from 'react';
-import { colors } from '../constants/Colors';
 
 interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
     icon?: React.ReactNode;
@@ -19,26 +18,33 @@ const Input: React.FC<InputProps> = ({
     return (
         <div
             className={`
-                flex flex-row items-center py-4 px-5 gap-4 rounded-xl 
+                flex flex-row items-center py-3 px-4 gap-3 rounded-xl
                 transition-all duration-200 border border-transparent
                 focus-within:border-primary/30 focus-within:bg-white focus-within:shadow-soft
                 ${containerClassName}
             `}
-            style={{ backgroundColor: colors.inputBg }}
+            style={{ backgroundColor: 'var(--color-input-bg)' }}
         >
             {icon && (
-                <div className="flex items-center justify-center opacity-40 focus-within:opacity-100 transition-opacity">
-                    {React.cloneElement(icon as React.ReactElement, { size: 20 } as any)}
+                <div
+                    className="flex items-center justify-center flex-shrink-0 opacity-40"
+                    style={{ color: 'var(--color-text)' }}
+                >
+                    {React.cloneElement(icon as React.ReactElement, { size: 18 } as any)}
                 </div>
             )}
             <input
                 ref={inputRef}
                 className={`
-                    flex-1 h-full bg-transparent outline-none text-[16px] font-medium
-                    placeholder:text-muted placeholder:font-normal
+                    flex-1 h-full bg-transparent outline-none text-[15px] font-medium
+                    placeholder:font-normal
                     ${className}
                 `}
-                style={{ color: colors.text }}
+                style={{
+                    color: 'var(--color-text)',
+                    caretColor: 'var(--color-primary)',
+                }}
+                placeholder={props.placeholder}
                 onChange={(e) => onChange?.(e.target.value)}
                 {...props}
             />

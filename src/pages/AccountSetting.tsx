@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import Avatar from '../components/Avatar';
 import Header from '../components/Header';
 import ScreenWrapper from '../components/ScreenWrapper';
-import { colors } from '../constants/Colors';
 import { useAuth } from '../contexts/authContext';
 
 const AccountSetting: React.FC = () => {
@@ -13,8 +12,8 @@ const AccountSetting: React.FC = () => {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <div className="flex items-center justify-center min-h-dvh">
+                <div className="spinner" />
             </div>
         );
     }
@@ -27,73 +26,64 @@ const AccountSetting: React.FC = () => {
     };
 
     const options = [
-        {
-            title: 'Edit Profile',
-            icon: <User size={22} />,
-            path: '/update-profile',
-            color: colors.text
-        },
-        {
-            title: 'Change Username',
-            icon: <PersonStanding size={22} />, // Close enough to at-outline if not available
-            path: '/update-username',
-            color: colors.text
-        },
+        { title: 'Edit Profile', icon: <User size={20} />, path: '/update-profile' },
+        { title: 'Change Username', icon: <PersonStanding size={20} />, path: '/update-username' },
     ];
 
     return (
-        <ScreenWrapper bg="white">
+        <ScreenWrapper>
             <div className="flex flex-col min-h-full">
-                <Header title="Account Settings" />
+                <Header title="Settings" />
 
-                <div className="flex-1 px-6 pt-10">
-                    {/* Profile Section */}
-                    <div className="flex flex-col items-center mb-12 gap-3">
-                        <Avatar uri={user?.avatar} size={100} rounded={34} />
+                <div className="px-5 pt-8">
+                    {/* Profile Card */}
+                    <div className="flex flex-col items-center mb-8 gap-2.5">
+                        <Avatar uri={user?.avatar} size={80} />
                         <div className="flex flex-col items-center">
-                            <h2 className="text-2xl font-black tracking-tight" style={{ color: colors.text }}>
-                                {user?.name || "Your Name"}
+                            <h2 className="text-[20px] font-black tracking-tight" style={{ color: 'var(--color-text)' }}>
+                                {user?.name || 'Your Name'}
                             </h2>
-                            <p className="text-base font-semibold opacity-50" style={{ color: colors.textLight }}>
-                                @{user?.username || "username"}
+                            <p className="text-[13px] font-semibold" style={{ color: 'var(--color-text-muted)' }}>
+                                @{user?.username || 'username'}
                             </p>
                         </div>
                     </div>
 
-                    {/* Options List */}
-                    <div className="flex flex-col gap-2">
+                    {/* Options */}
+                    <div className="flex flex-col">
                         {options.map((option, index) => (
                             <button
                                 key={index}
                                 onClick={() => navigate(option.path)}
-                                className="flex flex-row items-center justify-between py-5 border-b border-gray-50 active:bg-gray-50/50 transition-all outline-none group"
+                                className="flex flex-row items-center justify-between py-4 border-b active:bg-black/3 transition-all outline-none group"
+                                style={{ borderColor: 'var(--color-separator)' }}
                             >
-                                <div className="flex flex-row items-center gap-4">
+                                <div className="flex flex-row items-center gap-3.5">
                                     <div
-                                        className="p-2.5 rounded-xl bg-gray-50 group-active:bg-primary/10 transition-colors"
-                                        style={{ color: option.color }}
+                                        className="w-9 h-9 rounded-xl flex items-center justify-center"
+                                        style={{ backgroundColor: 'var(--color-separator)', color: 'var(--color-text)' }}
                                     >
                                         {option.icon}
                                     </div>
-                                    <span className="text-[17px] font-bold" style={{ color: colors.text }}>
+                                    <span className="text-[16px] font-semibold" style={{ color: 'var(--color-text)' }}>
                                         {option.title}
                                     </span>
                                 </div>
-                                <ChevronRight size={20} className="text-gray-300 group-active:text-primary transition-colors" />
+                                <ChevronRight size={18} style={{ color: 'var(--color-text-muted)', opacity: 0.4 }} />
                             </button>
                         ))}
 
-                        {/* Logout Option */}
+                        {/* Logout */}
                         <button
                             onClick={handleLogout}
-                            className="flex flex-row items-center justify-between py-5 active:bg-rose-50/50 transition-all outline-none group mt-4"
+                            className="flex flex-row items-center gap-3.5 py-4 mt-4 active:bg-red-50/50 transition-all outline-none"
                         >
-                            <div className="flex flex-row items-center gap-4 text-rose-500">
-                                <div className="p-2.5 rounded-xl bg-rose-50 transition-colors">
-                                    <LogOut size={22} />
-                                </div>
-                                <span className="text-[17px] font-bold">Log Out</span>
+                            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ backgroundColor: 'color-mix(in srgb, var(--color-error) 10%, transparent)', color: 'var(--color-error)' }}>
+                                <LogOut size={20} />
                             </div>
+                            <span className="text-[16px] font-semibold" style={{ color: 'var(--color-error)' }}>
+                                Log Out
+                            </span>
                         </button>
                     </div>
                 </div>

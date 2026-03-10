@@ -3,7 +3,6 @@ import { CheckCircle, RefreshCcw } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ScreenWrapper from '../components/ScreenWrapper';
-import { colors } from '../constants/Colors';
 import { resendCode, verifyCode } from '../utils/auth';
 
 const CheckEmail: React.FC = () => {
@@ -13,171 +12,142 @@ const CheckEmail: React.FC = () => {
     const [resendLoading, setResendLoading] = useState(false);
     const [codeSent, setCodeSent] = useState(false);
     const [shakeIndex, setShakeIndex] = useState<number[]>([]);
-
     const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-    useEffect(() => {
-        // Auto focus first input on mount
-        inputRefs.current[0]?.focus();
-    }, []);
+    useEffect(() => { inputRefs.current[0]?.focus(); }, []);
 
     const handleChange = (value: string, index: number) => {
         const char = value.slice(-1).replace(/\D/g, '');
         if (!char && value !== '') return;
-
-        const newCode = [...code];
-        newCode[index] = char;
-        setCode(newCode);
-
-        if (char && index < 5) {
-            inputRefs.current[index + 1]?.focus();
-        }
+        const newCode = [...code]; newCode[index] = char; setCode(newCode);
+        if (char && index < 5) inputRefs.current[index + 1]?.focus();
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-        if (e.key === 'Backspace' && !code[index] && index > 0) {
-            inputRefs.current[index - 1]?.focus();
-        }
+        if (e.key === 'Backspace' && !code[index] && index > 0) inputRefs.current[index - 1]?.focus();
     };
 
     const handlePaste = (e: React.ClipboardEvent) => {
         e.preventDefault();
-        const pastedData = e.clipboardData.getData('text').slice(0, 6).replace(/\D/g, '');
+        const pasted = e.clipboardData.getData('text').slice(0, 6).replace(/\D/g, '');
         const newCode = [...code];
-
-        pastedData.split('').forEach((char, i) => {
-            if (i < 6) newCode[i] = char;
-        });
-
+        pasted.split('').forEach((char, i) => { if (i < 6) newCode[i] = char; });
         setCode(newCode);
-        const nextIndex = Math.min(pastedData.length, 5);
-        inputRefs.current[nextIndex]?.focus();
+        inputRefs.current[Math.min(pasted.length, 5)]?.focus();
     };
 
     const onVerify = async () => {
         const fullCode = code.join('');
         if (fullCode.length < 6) {
-            // Trigger shake for empty slots
-            const emptyIndices = code.map((c, i) => c === '' ? i : -1).filter(i => i !== -1);
-            setShakeIndex(emptyIndices);
-            setTimeout(() => setShakeIndex([]), 600);
-            return;
+            const empties = code.map((c, i) => c === '' ? i : -1).filter(i => i !== -1);
+            setShakeIndex(empties); setTimeout(() => setShakeIndex([]), 600); return;
         }
-
         setLoading(true);
-        try {
-            await verifyCode(fullCode);
-            // On success, redirect to home
-            navigate('/home');
-        } catch (error) {
-            console.error("Verification failed", error);
-            // Shake all on error
-            setShakeIndex([0, 1, 2, 3, 4, 5]);
-            setTimeout(() => setShakeIndex([]), 600);
-        } finally {
-            setLoading(false);
-        }
+        try { await verifyCode(fullCode); navigate('/home'); }
+        catch { setShakeIndex([0,1,2,3,4,5]); setTimeout(() => setShakeIndex([]), 600); }
+        finally { setLoading(false); }
     };
 
     const onResend = async () => {
         setResendLoading(true);
         try {
             await resendCode();
-            setCodeSent(true);
-            setTimeout(() => setCodeSent(false), 4000);
-            setCode(['', '', '', '', '', '']);
-            inputRefs.current[0]?.focus();
-        } catch (error) {
-            console.error("Resend failed", error);
-        } finally {
-            setResendLoading(false);
-        }
+            setCodeSent(true); setTimeout(() => setCodeSent(false), 4000);
+            setCode(['', '', '', '', '', '']); inputRefs.current[0]?.focus();
+        } catch { console.error('Resend failed'); }
+        finally { setResendLoading(false); }
     };
 
+    const allFilled = code.join('').length === 6;
+
     return (
-        <ScreenWrapper bg="white">
+        <ScreenWrapper>
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col min-h-full px-6 pt-12 pb-10 justify-between"
+                className="flex flex-col min-h-full px-6 pt-14 pb-10 justify-between"
             >
                 {/* Header */}
-                <div className="flex flex-col items-center text-center mt-8">
-                    <h1 className="text-4xl font-black tracking-tighter mb-4" style={{ color: colors.primary }}>
+                <div className="flex flex-col items-center text-center">
+                    <h1 className="text-[32px] font-outfit font-black tracking-tight mb-2" style={{ color: 'var(--color-primary)' }}>
                         Verify Email
                     </h1>
-                    <p className="text-[17px] font-medium leading-relaxed opacity-70 mb-2" style={{ color: colors.text }}>
-                        We've sent a 6-digit code to your email
+                    <p className="text-[15px] font-medium leading-relaxed mb-1" style={{ color: 'var(--color-text-muted)' }}>
+                        We sent a 6-digit code to your email
                     </p>
-                    <span className="text-[14px] font-semibold opacity-50">
-                        Check your spam folder if not received
+                    <span className="text-[13px]" style={{ color: 'var(--color-text-muted)', opacity: 0.5 }}>
+                        Check spam if not received
                     </span>
                 </div>
 
                 {/* OTP Inputs */}
-                <div className="flex flex-row justify-between gap-2.5 my-12">
+                <div className="flex flex-row justify-between gap-2 my-10">
                     {code.map((digit, i) => (
                         <motion.div
                             key={i}
-                            animate={shakeIndex.includes(i) ? {
-                                x: [0, -10, 10, -10, 10, 0],
-                                borderColor: colors.error
-                            } : {}}
-                            transition={{ duration: 0.4 }}
-                            className={`flex-1 aspect-square max-w-[50px] rounded-2xl border-2 flex items-center justify-center transition-all ${digit ? 'border-primary bg-primary/5' : 'border-gray-200 bg-gray-50'
-                                }`}
-                            style={{ borderColor: digit ? colors.primary : undefined }}
+                            animate={shakeIndex.includes(i) ? { x: [0, -8, 8, -8, 8, 0] } : {}}
+                            transition={{ duration: 0.35 }}
+                            className="flex-1 aspect-square max-w-[52px] rounded-xl border-2 flex items-center justify-center transition-all"
+                            style={{
+                                borderColor: digit ? 'var(--color-primary)' : 'var(--color-border)',
+                                backgroundColor: digit ? 'color-mix(in srgb, var(--color-primary) 5%, transparent)' : 'var(--color-input-bg)',
+                            }}
                         >
                             <input
                                 ref={el => { inputRefs.current[i] = el; }}
                                 type="text"
+                                inputMode="numeric"
                                 maxLength={1}
                                 value={digit}
                                 onChange={(e) => handleChange(e.target.value, i)}
                                 onKeyDown={(e) => handleKeyDown(e, i)}
                                 onPaste={handlePaste}
-                                className="w-full h-full text-center text-2xl font-black bg-transparent outline-none"
-                                style={{ color: colors.text }}
+                                className="w-full h-full text-center text-[22px] font-black bg-transparent outline-none"
+                                style={{ color: 'var(--color-text)' }}
                             />
                         </motion.div>
                     ))}
                 </div>
 
                 {/* Actions */}
-                <div className="flex flex-col gap-6 w-full">
+                <div className="flex flex-col gap-3 w-full">
                     <motion.button
                         whileTap={{ scale: 0.98 }}
                         onClick={onVerify}
-                        disabled={loading || code.join('').length < 6}
-                        className={`w-full h-14 rounded-2xl font-bold text-lg shadow-lg flex items-center justify-center transition-all ${loading || code.join('').length < 6 ? 'bg-gray-200 text-gray-400 brightness-100 shadow-none' : 'text-white active:brightness-90'
-                            }`}
-                        style={{ backgroundColor: !loading && code.join('').length === 6 ? colors.primary : undefined }}
+                        disabled={loading || !allFilled}
+                        className="w-full h-12 rounded-xl font-bold text-[16px] flex items-center justify-center transition-all shadow-premium"
+                        style={{
+                            backgroundColor: allFilled && !loading ? 'var(--color-primary)' : 'var(--color-separator)',
+                            color: allFilled && !loading ? 'white' : 'var(--color-text-muted)',
+                        }}
                     >
                         {loading ? (
-                            <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin" />
-                        ) : (
-                            'Verify Code'
-                        )}
+                            <div className="w-5 h-5 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                        ) : 'Verify Code'}
                     </motion.button>
 
                     <button
                         onClick={onResend}
                         disabled={resendLoading}
-                        className="flex flex-row items-center justify-center gap-3 py-4 rounded-2xl border-2 border-gray-100 font-bold active:bg-gray-50 transition-all outline-none"
-                        style={{ color: colors.primary }}
+                        className="flex flex-row items-center justify-center gap-2.5 py-3.5 rounded-xl border-2 font-bold active:bg-black/3 transition-all outline-none"
+                        style={{ borderColor: 'var(--color-border)', color: 'var(--color-primary)' }}
                     >
-                        <RefreshCcw size={20} className={resendLoading ? 'animate-spin' : ''} />
-                        <span>{resendLoading ? 'Sending...' : 'Resend Code'}</span>
+                        <RefreshCcw size={18} className={resendLoading ? 'animate-spin' : ''} />
+                        <span className="text-[15px]">{resendLoading ? 'Sending...' : 'Resend Code'}</span>
                     </button>
 
                     {codeSent && (
                         <motion.div
-                            initial={{ opacity: 0, y: 10 }}
+                            initial={{ opacity: 0, y: 8 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="flex flex-row items-center justify-center gap-2 p-4 bg-primary/10 rounded-2xl border border-primary/20"
+                            className="flex flex-row items-center justify-center gap-2 p-3.5 rounded-xl border"
+                            style={{
+                                backgroundColor: 'color-mix(in srgb, var(--color-primary) 8%, transparent)',
+                                borderColor: 'color-mix(in srgb, var(--color-primary) 20%, transparent)',
+                            }}
                         >
-                            <CheckCircle size={18} style={{ color: colors.primary }} />
-                            <span className="text-sm font-bold" style={{ color: colors.primary }}>New code sent!</span>
+                            <CheckCircle size={16} style={{ color: 'var(--color-primary)' }} />
+                            <span className="text-[13px] font-bold" style={{ color: 'var(--color-primary)' }}>Code sent!</span>
                         </motion.div>
                     )}
                 </div>

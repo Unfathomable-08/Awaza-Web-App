@@ -6,7 +6,6 @@ import Button from '../components/Button';
 import Header from '../components/Header';
 import Input from '../components/Input';
 import ScreenWrapper from '../components/ScreenWrapper';
-import { colors } from '../constants/Colors';
 import { signUp } from '../utils/auth';
 
 const Signup: React.FC = () => {
@@ -19,114 +18,82 @@ const Signup: React.FC = () => {
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const trimmedUsername = username.trim();
-        const trimmedEmail = email.trim();
-
-        if (!trimmedUsername || !trimmedEmail || !password) {
-            setError('Please fill all the fields');
-            return;
-        }
-
-        if (password.length < 6) {
-            setError('Password must be at least 6 characters');
-            return;
-        }
-
-        setLoading(true);
-        setError(null);
-
-        try {
-            await signUp(trimmedEmail, password, trimmedUsername);
-        } catch (err: any) {
-            console.error('Signup error:', err);
-            setError(err.message || 'Account creation failed');
-        } finally {
-            setLoading(false);
-        }
+        const tu = username.trim(), te = email.trim();
+        if (!tu || !te || !password) { setError('Please fill all the fields'); return; }
+        if (password.length < 6) { setError('Password must be at least 6 characters'); return; }
+        setLoading(true); setError(null);
+        try { await signUp(te, password, tu); }
+        catch (err: any) { setError(err.message || 'Account creation failed'); }
+        finally { setLoading(false); }
     };
 
     return (
-        <ScreenWrapper bg={colors.background}>
+        <ScreenWrapper>
             <Header transparent showBackButton={true} />
 
-            <div className="flex flex-col flex-1 px-8 pt-4 pb-12 overflow-y-auto no-scrollbar">
+            <div className="flex flex-col flex-1 px-6 pt-2 pb-10 overflow-y-auto no-scrollbar">
                 <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                    className="flex flex-col flex-1 gap-10"
+                    initial={{ opacity: 0, y: 24 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex flex-col flex-1 gap-8"
                 >
-                    {/* Header Section */}
-                    <div className="flex flex-col pt-4">
-                        <span className="text-[17px] font-medium opacity-40 mb-1" style={{ color: colors.text }}>
+                    {/* Title */}
+                    <div className="flex flex-col pt-2">
+                        <span
+                            className="text-[14px] font-medium mb-1"
+                            style={{ color: 'var(--color-text-muted)' }}
+                        >
                             Join us today
                         </span>
-                        <h1 className="text-4xl font-outfit font-black tracking-wide" style={{ color: colors.primary }}>
-                            Create New Account
+                        <h1
+                            className="text-[32px] font-outfit font-black tracking-tight leading-tight"
+                            style={{ color: 'var(--color-primary)' }}
+                        >
+                            Create Account
                         </h1>
                     </div>
 
-                    {/* Form Section */}
-                    <form onSubmit={onSubmit} className="flex flex-col gap-6 w-full">
-                        <div className="flex flex-col gap-5">
-                            <Input
-                                icon={<User color={colors.text} />}
-                                placeholder="Full Name"
-                                value={username}
-                                onChange={(val) => setUsername(val)}
-                                required
-                            />
-
-                            <Input
-                                icon={<Mail color={colors.text} />}
-                                placeholder="Email Address"
-                                value={email}
-                                onChange={(val) => setEmail(val)}
-                                type="email"
-                                required
-                            />
-
-                            <Input
-                                icon={<Lock color={colors.text} />}
-                                placeholder="Password"
-                                value={password}
-                                onChange={(val) => setPassword(val)}
-                                type="password"
-                                required
-                            />
+                    {/* Form */}
+                    <form onSubmit={onSubmit} className="flex flex-col gap-5 w-full">
+                        <div className="flex flex-col gap-3">
+                            <Input icon={<User />} placeholder="Full name" value={username} onChange={setUsername} required />
+                            <Input icon={<Mail />} placeholder="Email address" value={email} onChange={setEmail} type="email" required />
+                            <Input icon={<Lock />} placeholder="Password" value={password} onChange={setPassword} type="password" required />
                         </div>
 
                         {error && (
                             <motion.div
-                                initial={{ opacity: 0, scale: 0.95 }}
+                                initial={{ opacity: 0, scale: 0.96 }}
                                 animate={{ opacity: 1, scale: 1 }}
-                                className="p-4 rounded-2xl bg-error/5 border border-error/10"
+                                className="p-3 rounded-xl border"
+                                style={{
+                                    backgroundColor: 'color-mix(in srgb, var(--color-error) 5%, transparent)',
+                                    borderColor: 'color-mix(in srgb, var(--color-error) 15%, transparent)',
+                                }}
                             >
-                                <p className="text-[14px] font-bold text-center" style={{ color: colors.error }}>
+                                <p
+                                    className="text-[13px] font-semibold text-center"
+                                    style={{ color: 'var(--color-error)' }}
+                                >
                                     {error}
                                 </p>
                             </motion.div>
                         )}
 
-                        <div className="pt-4">
-                            <Button
-                                title="Sign Up"
-                                loading={loading}
-                                hasShadow={true}
-                            />
-                        </div>
+                        <Button title="Create Account" loading={loading} hasShadow={true} />
                     </form>
 
-                    {/* Footer Section */}
-                    <div className="mt-auto flex flex-col items-center gap-6">
-                        <div className="flex flex-row items-center gap-2">
-                            <span className="font-medium opacity-60" style={{ color: colors.text }}>
+                    {/* Footer */}
+                    <div className="mt-auto flex flex-col items-center">
+                        <div className="flex flex-row items-center gap-1.5">
+                            <span className="text-[14px] font-medium" style={{ color: 'var(--color-text-muted)' }}>
                                 Already a member?
                             </span>
                             <button
                                 onClick={() => navigate('/login')}
-                                className="font-bold active-scale transition-opacity hover:opacity-70"
-                                style={{ color: colors.primary }}
+                                className="text-[14px] font-bold active-scale transition-opacity hover:opacity-70"
+                                style={{ color: 'var(--color-primary)' }}
                             >
                                 Sign In
                             </button>
