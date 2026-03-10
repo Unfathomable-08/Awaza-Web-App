@@ -65,7 +65,7 @@ const Chat: React.FC = () => {
 
     return (
         <ScreenWrapper>
-            <div className="flex flex-col h-dvh overflow-hidden">
+            <div className="flex flex-col h-svh overflow-hidden">
                 <Header
                     centerElement={
                         <div className="flex flex-row items-center gap-2.5">

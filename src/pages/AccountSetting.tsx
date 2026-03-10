@@ -33,7 +33,7 @@ const AccountSetting: React.FC = () => {
 
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center min-h-dvh">
+            <div className="flex items-center justify-center min-h-svh">
                 <div className="spinner" />
             </div>
         );

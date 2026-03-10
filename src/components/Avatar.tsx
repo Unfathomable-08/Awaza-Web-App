@@ -3,8 +3,7 @@
  * @description Rounded user avatar image with a fallback to a default image.
  *
  * When `onClick` is provided the avatar is wrapped in a `<button>` for
- * proper keyboard/accessibility support.  Border-radius is proportional to
- * the size (38% of height) to give a consistent "squircle" look.
+ * proper keyboard/accessibility support.
  */
 
 import React from 'react';

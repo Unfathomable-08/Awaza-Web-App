@@ -1,9 +1,4 @@
 import axios from "axios";
-const AsyncStorage = {
-  getItem: (key: string) => Promise.resolve(localStorage.getItem(key)),
-  setItem: (key: string, value: string) => Promise.resolve(localStorage.setItem(key, value)),
-  removeItem: (key: string) => Promise.resolve(localStorage.removeItem(key)),
-};
 
 // const API_URL = "http://localhost:5000/api/actions/posts";
 const API_URL = "https://social-media-app-backend-khaki.vercel.app/api/actions/posts";
@@ -15,7 +10,7 @@ const api = axios.create({
 
 // Add token to every request
 api.interceptors.request.use(async (config) => {
-  const token = await AsyncStorage.getItem(TOKEN_KEY);
+  const token = localStorage.getItem(TOKEN_KEY);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

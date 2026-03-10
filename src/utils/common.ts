@@ -1,14 +1,6 @@
 const deviceWidth = typeof window !== 'undefined' ? window.innerWidth : 375;
 const deviceHeight = typeof window !== 'undefined' ? window.innerHeight : 812;
 
-export const hp = (percentage: number) => {
-  return (percentage * deviceHeight) / 100;
-};
-
-export const wp = (percentage: number) => {
-  return (percentage * deviceWidth) / 100;
-};
-
 export const timeAgo = (date: string | number | Date) => {
   if (!date) return 'now';
 

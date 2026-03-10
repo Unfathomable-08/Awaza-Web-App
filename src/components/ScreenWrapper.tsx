@@ -27,7 +27,7 @@ interface ScreenWrapperProps {
  * ScreenWrapper
  *
  * Provides the full-height flex-column container that pages are built inside.
- * Uses `min-h-dvh` (dynamic viewport height) for correct behaviour on mobile
+ * Uses `min-h-svh` (smallest viewport height) for correct behaviour on mobile
  * browsers where the address bar can shrink/expand.
  */
 const ScreenWrapper: React.FC<ScreenWrapperProps> = ({
@@ -37,7 +37,7 @@ const ScreenWrapper: React.FC<ScreenWrapperProps> = ({
 }) => {
     return (
         <div
-            className={`flex-1 flex flex-col w-full relative min-h-dvh bg-app ${className}`}
+            className={`flex-1 flex flex-col w-full relative min-h-svh bg-app ${className}`}
             /* Only use an inline style when a custom colour override is provided */
             style={bg ? { backgroundColor: bg } : undefined}
         >

@@ -135,7 +135,7 @@ const Home: React.FC = () => {
                     }
                 }}
             >
-                {!hasMore && <p className="text-gray-500">No more products</p>}
+                {!hasMore && <p className="text-gray-500">No More Posts</p>}
             </motion.div>
         </ScreenWrapper>
     );

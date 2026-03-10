@@ -1,8 +1,3 @@
-const AsyncStorage = {
-  getItem: (key: string) => Promise.resolve(localStorage.getItem(key)),
-  setItem: (key: string, value: string) => Promise.resolve(localStorage.setItem(key, value)),
-  removeItem: (key: string) => Promise.resolve(localStorage.removeItem(key)),
-};
 import axios, { AxiosError } from "axios";
 
 // const API_BASE = "http://localhost:5000/api/auth";
@@ -30,7 +25,7 @@ const api = axios.create({
 // Auto-attach JWT to every request
 api.interceptors.request.use(async (config) => {
   try {
-    const token = await AsyncStorage.getItem(TOKEN_KEY);
+    const token = localStorage.getItem(TOKEN_KEY);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -70,8 +65,8 @@ const extractErrorMessage = (error: AxiosError<any> | any): string => {
 // Helper: save token
 const saveToken = async (token: string) => {
   try {
-    await AsyncStorage.removeItem(TOKEN_KEY);
-    await AsyncStorage.setItem(TOKEN_KEY, token);
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.setItem(TOKEN_KEY, token);
   } catch (err) {
     console.error("Failed to save auth token", err);
     throw new AuthError("Failed to save login session", "STORAGE_ERROR");
@@ -81,7 +76,7 @@ const saveToken = async (token: string) => {
 // Helper: remove token
 export const removeToken = async () => {
   try {
-    await AsyncStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(TOKEN_KEY);
   } catch (err) {
     console.error("Failed to remove token", err);
   }
@@ -245,7 +240,7 @@ export const logOut = async () => {
 // ============== CHECK IF LOGGED IN (on app start) ==============
 export const getStoredToken = async (): Promise<string | null> => {
   try {
-    return await AsyncStorage.getItem(TOKEN_KEY);
+    return localStorage.getItem(TOKEN_KEY);
   } catch {
     return null;
   }
