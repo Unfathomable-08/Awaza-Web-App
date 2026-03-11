@@ -1,9 +1,10 @@
-import axois from "axios";
+import axios from "axios";
+import { handleApiError } from "./errorHandling";
 
 const API_URL = "https://social-media-app-backend-khaki.vercel.app/api/inbox";
 const TOKEN_KEY = "auth_token"
 
-const api = axois.create({
+const api = axios.create({
   baseURL: API_URL,
 })
 
@@ -25,14 +26,7 @@ export const searchUsers = async (username: string) => {
   }
   catch (error: any) {
     console.error("Error searching users:", error);
-
-    if (error.response) {
-      throw new Error(error.response.data.message || 'Failed to load feed');
-    } else if (error.request) {
-      throw new Error('No response from server. Check your internet connection.');
-    } else {
-      throw new Error(error.message || 'An unexpected error occurred');
-    }
+    handleApiError(error, "SEARCH_USERS_FAILED");
   }
 }
 
@@ -44,13 +38,6 @@ export const searchUserByID = async (id: string) => {
   }
   catch (error: any) {
     console.error("Error searching user:", error);
-
-    if (error.response) {
-      throw new Error(error.response.data.message || 'Failed to load feed');
-    } else if (error.request) {
-      throw new Error('No response from server. Check your internet connection.');
-    } else {
-      throw new Error(error.message || 'An unexpected error occurred');
-    }
+    handleApiError(error, "SEARCH_USER_FAILED");
   }
 }

@@ -1,174 +1,171 @@
-import { motion } from 'framer-motion';
-import { Mail, UserPlus } from 'lucide-react';
+import { Mail, Calendar, MapPin, Link as LinkIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Avatar from '../components/Avatar';
-import Header from '../components/Header';
-import PostItem from '../components/PostItem';
+import Feed from '../components/Feed';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { useAuth } from '../contexts/authContext';
+import { loadFeed } from '../utils/feed';
+import { getProfileInfo } from '../utils/getProfile';
 
 const Profile: React.FC = () => {
-    const { userId } = useParams();
+    const { username } = useParams();
     const navigate = useNavigate();
     const { user } = useAuth();
+    
     const [profile, setProfile] = useState<any>(null);
     const [posts, setPosts] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [feedLoading, setFeedLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
+    const [cursor, setCursor] = useState<string | null>(null);
 
-    useEffect(() => { if (userId) fetchProfile(); }, [userId]);
+    useEffect(() => {
+        if (username) {
+            fetchProfile();
+            // Load feed for this user - using the same logic as Home
+            loadFeed({
+                isLoadMore: false,
+                loading: feedLoading,
+                setLoading: setFeedLoading,
+                refreshing,
+                setRefreshing,
+                hasMore,
+                setHasMore,
+                cursor,
+                setCursor,
+                setPosts,
+            });
+        }
+    }, [username]);
 
     const fetchProfile = async () => {
         setLoading(true);
         try {
+            const profile = await getProfileInfo({username: username!});
+            console.log("Profile info:", profile);
+            // Mocking profile data based on username
             setProfile({
-                id: userId, name: 'John Doe', username: 'johndoe', avatar: null,
-                bio: 'Digital Creator & Social Enthusiast. Passionate about building seamless experiences. 🌍✨'
+                id: profile?.id,
+                name: (username ? (username.split('.')[0].charAt(0).toUpperCase() + username.split('.')[0].slice(1)) : 'User'),
+                username: username,
+                avatar: profile?.avatar,
+                banner: 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2029&auto=format&fit=crop', 
+                // bio: profile?.bio,
+                // followersCount: profile?.followersCount,
+                // followingCount: profile?.followingCount,
             });
-            setPosts([]);
-        } catch (e) { console.error(e); }
-        finally { setLoading(false); }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleMessage = () => {
-        if (!user || !profile) return;
-        const sorted = [user.id, profile.id].sort();
-        navigate(`/chat/${sorted.join('_')}`);
-    };
-
-    if (loading) return (
+    if (loading && !profile) return (
         <ScreenWrapper>
-            <div className="flex flex-col h-full">
-                <Header transparent title="Profile" />
-                <div className="flex-1 flex flex-col items-center justify-center gap-3">
-                    <div className="spinner" />
-                </div>
+            <div className="flex items-center justify-center h-full">
+                <div className="spinner" />
             </div>
         </ScreenWrapper>
     );
 
-    const isOwnProfile = user?.id === userId;
+    const isOwnProfile = user?.username === (username || '');
 
     return (
         <ScreenWrapper>
-            <div className="flex flex-col h-full relative overflow-hidden">
-                <Header transparent showBackButton={true} />
-
+            <div className="flex flex-col h-full bg-white relative">
                 <div className="flex-1 overflow-y-auto no-scrollbar">
-                    {/* Profile Header */}
-                    <div className="px-6 pb-6 flex flex-col items-center text-center">
-                        <motion.div
-                            initial={{ scale: 0.85, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{ type: 'spring', damping: 20, delay: 0.1 }}
-                            className="relative mt-4"
-                        >
-                            <div
-                                className="absolute inset-0 blur-3xl rounded-full"
-                                style={{ backgroundColor: 'color-mix(in srgb, var(--color-primary) 12%, transparent)' }}
-                            />
-                            <Avatar uri={profile?.avatar} size={96} className="relative z-10" />
-                        </motion.div>
-
-                        <motion.div
-                            initial={{ y: 16, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ duration: 0.45, delay: 0.2 }}
-                            className="mt-4 flex flex-col items-center"
-                        >
-                            <h2 className="text-[24px] font-outfit font-black tracking-tight" style={{ color: 'var(--color-text)' }}>
-                                {profile?.name}
-                            </h2>
-                            <span className="text-[13px] font-bold uppercase tracking-wider mt-0.5" style={{ color: 'var(--color-text-muted)', opacity: 1 }}>
-                                @{profile?.username}
-                            </span>
-                        </motion.div>
-
-                        <motion.p
-                            initial={{ y: 16, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ duration: 0.45, delay: 0.3 }}
-                            className="mt-3 text-[14px] font-normal leading-relaxed max-w-xs"
-                            style={{ color: 'var(--color-text-muted)' }}
-                        >
-                            {profile?.bio}
-                        </motion.p>
-
-                        {/* Stats */}
-                        <motion.div
-                            initial={{ y: 16, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ duration: 0.45, delay: 0.4 }}
-                            className="flex flex-row items-center justify-center gap-10 mt-6 w-full"
-                        >
-                            <div className="flex flex-col items-center">
-                                <span className="text-[20px] font-outfit font-black" style={{ color: 'var(--color-text)' }}>1.2k</span>
-                                <span className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>Followers</span>
-                            </div>
-                            <div className="w-px h-7" style={{ backgroundColor: 'var(--color-border)' }} />
-                            <div className="flex flex-col items-center">
-                                <span className="text-[20px] font-outfit font-black" style={{ color: 'var(--color-text)' }}>482</span>
-                                <span className="text-[10px] font-bold uppercase tracking-widest mt-0.5" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>Following</span>
-                            </div>
-                        </motion.div>
-
-                        {/* Action Buttons */}
-                        <motion.div
-                            initial={{ y: 16, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ duration: 0.45, delay: 0.5 }}
-                            className="flex flex-row gap-3 mt-6 w-full max-w-xs"
-                        >
-                            {!isOwnProfile ? (
-                                <>
-                                    <button
-                                        className="flex-2 h-11 rounded-xl text-white font-bold flex items-center justify-center gap-2 shadow-premium active-scale transition-all text-[14px]"
-                                        style={{ backgroundColor: 'var(--color-primary)' }}
-                                    >
-                                        <UserPlus size={17} strokeWidth={2.5} />
-                                        <span>Follow</span>
-                                    </button>
-                                    <button
-                                        onClick={handleMessage}
-                                        className="flex-1 h-11 rounded-xl flex items-center justify-center active-scale transition-all border"
-                                        style={{ backgroundColor: 'var(--color-bg-subtle)', borderColor: 'var(--color-border)', color: 'var(--color-text)' }}
-                                    >
-                                        <Mail size={18} strokeWidth={2} />
-                                    </button>
-                                </>
-                            ) : (
-                                <button
-                                    onClick={() => navigate('/update-profile')}
-                                    className="w-full h-11 rounded-xl font-bold text-[14px] active-scale transition-all border"
-                                    style={{ backgroundColor: 'var(--color-bg-subtle)', borderColor: 'var(--color-border)', color: 'var(--color-text)' }}
-                                >
-                                    Edit Profile
-                                </button>
-                            )}
-                        </motion.div>
+                    {/* Banner */}
+                    <div className="h-24 w-full bg-gray-200 relative">
+                        {profile?.banner && (
+                            <img src={profile.banner} alt="Banner" className="w-full h-full object-cover" />
+                        )}
                     </div>
 
-                    {/* Posts */}
-                    <div className="border-t" style={{ borderColor: 'var(--color-separator)' }}>
-                        <div className="px-4 py-3 flex flex-row items-center gap-3">
-                            <h3 className="text-[11px] font-outfit font-black uppercase tracking-[0.2em]" style={{ color: 'var(--color-text-muted)', opacity: 0.8 }}>Posts</h3>
-                            <div className="h-px flex-1" style={{ backgroundColor: 'var(--color-separator)' }} />
+                    {/* Profile Info Section */}
+                    <div className="px-3 pb-4">
+                        <div className="relative flex justify-between items-end mb-3">
+                            <div className="bg-white rounded-full -mt-10">
+                                <Avatar uri={profile?.avatar} size={80} className="sm:w-28 sm:h-28" />
+                            </div>
+                            
+                            <div className="transform translate-y-2">
+                                {isOwnProfile ? (
+                                    <button 
+                                        onClick={() => navigate('/update-profile')}
+                                        className="px-4 h-8 rounded-full border border-gray-700 font-bold text-[14px] hover:bg-gray-50 transition-colors"
+                                    >
+                                        Edit profile
+                                    </button>
+                                ) : (
+                                    <div className="flex gap-2">
+                                        <button className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-50 transition-colors">
+                                            <Mail size={18} />
+                                        </button>
+                                        <button className="px-5 h-8 rounded-full bg-black text-white font-bold text-[14px] hover:bg-black/90 transition-colors">
+                                            Follow
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
-                        {posts.length > 0 ? (
-                            <div className="flex flex-col">
-                                {posts.map((item, index) => (
-                                    <PostItem key={item.id} item={item} currentUser={user} index={index} />
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="py-16 flex flex-col items-center justify-center text-center px-10">
-                                <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-3" style={{ backgroundColor: 'var(--color-separator)' }}>
-                                    <span className="text-xl" style={{ opacity: 1 }}>📸</span>
+                        <div className="mt-2">
+                            <h2 className="text-xl font-black tracking-tight leading-tight">{profile?.name}</h2>
+                            <p className="text-gray-500 text-[15px]">@{profile?.username}</p>
+                        </div>
+
+                        <p className="mt-3 text-[15px] leading-normal">{profile?.bio}</p>
+
+                        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
+                            {profile?.location && (
+                                <div className="flex items-center gap-1 text-gray-500 text-[14px]">
+                                    <MapPin size={16} />
+                                    <span>{profile.location}</span>
                                 </div>
-                                <p className="text-[14px] font-medium" style={{ color: 'var(--color-text-muted)' }}>No posts yet</p>
+                            )}
+                            {profile?.website && (
+                                <a href={profile.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary text-[14px] hover:underline">
+                                    <LinkIcon size={16} />
+                                    <span>{profile.website.replace('https://', '')}</span>
+                                </a>
+                            )}
+                            <div className="flex items-center gap-1 text-gray-500 text-[14px]">
+                                <Calendar size={16} />
+                                <span>{profile?.joinedDate}</span>
                             </div>
-                        )}
+                        </div>
+
+                        <div className="flex gap-4 mt-3">
+                            <button className="hover:underline">
+                                <span className="font-bold text-[14px]">{profile?.followingCount}</span>
+                                <span className="text-gray-500 text-[14px] ml-1">Following</span>
+                            </button>
+                            <button className="hover:underline">
+                                <span className="font-bold text-[14px]">{profile?.followersCount}</span>
+                                <span className="text-gray-500 text-[14px] ml-1">Followers</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Tabs */}
+                    <div className="flex justify-start border-b border-gray-100 my-4">
+                        {['Posts', 'Replies', 'Likes'].map((tab, i) => (
+                            <button 
+                                key={tab} 
+                                className={`px-4 py-2 text-[15px] font-bold hover:bg-black/5 transition-colors relative ${i === 0 ? '' : 'text-gray-500'}`}
+                            >
+                                {tab}
+                                {i === 0 && <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-1 bg-primary rounded-full" />}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Feed */}
+                    <div className="min-h-screen">
+                        <Feed data={posts} loading={feedLoading} user={user} />
                     </div>
                 </div>
             </div>

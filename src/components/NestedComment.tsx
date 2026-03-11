@@ -92,7 +92,7 @@ export const NestedComment: React.FC<NestedCommentProps> = ({
                     <Avatar
                         uri={comment.user?.avatar}
                         size={34}
-                        onClick={() => navigate(`/profile/${comment.user?._id || comment.user?.id}`)}
+                        onClick={() => navigate(`/profile/${comment.user?.username}`)}
                     />
 
                     {/* Line segment connecting avatar to child replies */}
@@ -113,7 +113,7 @@ export const NestedComment: React.FC<NestedCommentProps> = ({
                                 cursor-pointer hover:text-primary transition-colors
                             "
                             onClick={() =>
-                                navigate(`/profile/${comment.user?._id || comment.user?.id}`)
+                                navigate(`/profile/${comment.user?.username}`)
                             }
                         >
                             {comment.user?.name}

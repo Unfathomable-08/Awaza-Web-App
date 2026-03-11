@@ -1,4 +1,5 @@
 import axios from "axios";
+import { handleApiError } from "./errorHandling";
 
 // const API_URL = "http://localhost:5000/api/actions/posts";
 const API_URL = "https://social-media-app-backend-khaki.vercel.app/api/actions/posts";
@@ -28,14 +29,7 @@ export const likePost = async (postId: string) => {
     return res.data;
   } catch (error: any) {
     console.error("Error liking post:", error);
-
-    if (error.response) {
-      throw new Error(error.response.data.message || "Failed to like post");
-    } else if (error.request) {
-      throw new Error("No response from server. Check your internet connection.");
-    } else {
-      throw new Error(error.message || "An unexpected error occurred");
-    }
+    handleApiError(error, "LIKE_POST_FAILED");
   }
 }
 
@@ -48,14 +42,7 @@ export const loadComments = async (postId: string) => {
     return res.data;
   } catch (error: any) {
     console.error("Error loading comments:", error);
-
-    if (error.response) {
-      throw new Error(error.response.data.message || "Failed to load comments");
-    } else if (error.request) {
-      throw new Error("No response from server. Check your internet connection.");
-    } else {
-      throw new Error(error.message || "An unexpected error occurred");
-    }
+    handleApiError(error, "LOAD_COMMENTS_FAILED");
   }
 }
 
@@ -70,14 +57,7 @@ export const addComment = async (postId: string, content: string, commentId?: st
     return res.data;
   } catch (error: any) {
     console.error("Error adding comment:", error);
-
-    if (error.response) {
-      throw new Error(error.response.data.message || "Failed to add comment");
-    } else if (error.request) {
-      throw new Error("No response from server. Check your internet connection.");
-    } else {
-      throw new Error(error.message || "An unexpected error occurred");
-    }
+    handleApiError(error, "ADD_COMMENT_FAILED");
   }
 }
 
@@ -90,13 +70,6 @@ export const deleteComment = async (postId: string, commentId: string) => {
     return res.data;
   } catch (error: any) {
     console.error("Error deleting comment:", error);
-
-    if (error.response) {
-      throw new Error(error.response.data.message || "Failed to delete comment");
-    } else if (error.request) {
-      throw new Error("No response from server. Check your internet connection.");
-    } else {
-      throw new Error(error.message || "An unexpected error occurred");
-    }
+    handleApiError(error, "DELETE_COMMENT_FAILED");
   }
 }

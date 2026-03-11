@@ -1,17 +1,5 @@
 import { getFeed } from "./post";
-
-type LoadFeedParams = {
-  isLoadMore?: boolean;
-  loading: boolean;
-  setLoading: (val: boolean) => void;
-  refreshing: boolean;
-  setRefreshing: (val: boolean) => void;
-  hasMore: boolean;
-  setHasMore: (val: boolean) => void;
-  cursor?: string | null;
-  setCursor?: (val: string | null) => void;
-  setPosts: (updater: any) => void;
-};
+import type { LoadFeedParams } from "../types";
 
 export const loadFeed = async ({
   isLoadMore = false,
@@ -34,6 +22,7 @@ export const loadFeed = async ({
 
   try {
     const data = await getFeed(isLoadMore ? cursor ?? undefined : undefined);
+    if (!data) return;
 
     if (isLoadMore) {
       setPosts((prev: any[]) => [...prev, ...data.posts]);

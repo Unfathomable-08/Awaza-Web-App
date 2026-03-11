@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { handleApiError } from './errorHandling';
 
 // const API_URL = 'http://localhost:5000/api/posts';
 const API_URL = 'https://social-media-app-backend-khaki.vercel.app/api/posts';
@@ -31,21 +32,13 @@ export const createPost = async (data: {
     return res.data;
   } catch (error: any) {
     console.error('Error creating post:', error);
-
-    // Customize error message if axios error
-    if (error.response) {
-      throw new Error(error.response.data.message || 'Server error occurred');
-    } else if (error.request) {
-      throw new Error('No response from server. Check your connection.');
-    } else {
-      throw new Error(error.message || 'Failed to create post');
-    }
+    handleApiError(error, 'CREATE_POST_FAILED');
   }
 };
 
 
 // ========== Get All Posts (pagination) ==========
-export const getFeed = async (cursor?: string, limit: number = 5) => {
+export const getFeed = async (cursor?: string, limit: number = 10) => {
   try {
     const params = new URLSearchParams();
     params.append("limit", limit.toString());
@@ -80,14 +73,7 @@ export const getFeed = async (cursor?: string, limit: number = 5) => {
     };
   } catch (error: any) {
     console.error('Error fetching feed:', error);
-
-    if (error.response) {
-      throw new Error(error.response.data.message || 'Failed to load feed');
-    } else if (error.request) {
-      throw new Error('No response from server. Check your internet connection.');
-    } else {
-      throw new Error(error.message || 'An unexpected error occurred');
-    }
+    handleApiError(error, 'FETCH_FEED_FAILED');
   }
 };
 
@@ -101,13 +87,6 @@ export const getPost = async (postId: string) => {
     return res.data;
   } catch (error: any) {
     console.error('Error fetching post:', error);
-
-    if (error.response) {
-      throw new Error(error.response.data.message || 'Failed to load post');
-    } else if (error.request) {
-      throw new Error('No response from server. Check your internet connection.');
-    } else {
-      throw new Error(error.message || 'An unexpected error occurred');
-    }
+    handleApiError(error, 'FETCH_POST_FAILED');
   }
 }

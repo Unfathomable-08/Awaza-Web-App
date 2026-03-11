@@ -21,7 +21,7 @@ interface AvatarProps {
 }
 
 /** Path to the bundled default avatar image */
-const DEFAULT_AVATAR = '/src/assets/images/default_user.jpg';
+import defaultAvatar from '../assets/images/default_user.jpg';
 
 /**
  * Avatar
@@ -36,7 +36,7 @@ const Avatar: React.FC<AvatarProps> = ({
     className = '',
     onClick,
 }) => {
-    const src = uri || DEFAULT_AVATAR;
+    const src = uri || defaultAvatar;
 
     /** Core image container — shared by both the plain and button variants */
     const imageBox = (
@@ -58,7 +58,7 @@ const Avatar: React.FC<AvatarProps> = ({
                 className="w-full h-full object-cover"
                 onError={(e) => {
                     /* Swap to the default avatar if the URL fails to load */
-                    (e.target as HTMLImageElement).src = DEFAULT_AVATAR;
+                    (e.target as HTMLImageElement).src = defaultAvatar;
                 }}
             />
         </div>

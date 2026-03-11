@@ -115,12 +115,12 @@ const PostDetails: React.FC = () => {
                     >
                         <div className="flex flex-row items-center justify-between">
                             <div className="flex flex-row items-center gap-3">
-                                <Avatar uri={post.user?.avatar} size={44} onClick={() => navigate(`/profile/${post.user?._id || post.user?.id}`)} />
+                                <Avatar uri={post.user?.avatar} size={44} onClick={() => navigate(`/profile/${post.user?.username}`)} />
                                 <div className="flex flex-col">
                                     <span
                                         className="font-outfit font-black text-[16px] tracking-tight leading-none mb-1 cursor-pointer hover:text-primary transition-colors"
                                         style={{ color: 'var(--color-text)' }}
-                                        onClick={() => navigate(`/profile/${post.user?._id || post.user?.id}`)}
+                                        onClick={() => navigate(`/profile/${post.user?.username}`)}
                                     >
                                         {post.user?.name}
                                     </span>

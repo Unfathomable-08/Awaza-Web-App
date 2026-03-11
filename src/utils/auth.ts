@@ -1,22 +1,12 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
+import type { User } from "../types";
+import { AppError, extractErrorMessage } from "./errorHandling";
 
 // const API_BASE = "http://localhost:5000/api/auth";
 const API_BASE = "https://social-media-app-backend-khaki.vercel.app/api/auth";
 const TOKEN_KEY = "auth_token";
 
-// Custom error class for better error handling in UI
-export class AuthError extends Error {
-  code: string;
-  status?: number;
-
-  constructor(message: string, code: string = "UNKNOWN_ERROR", status?: number) {
-    super(message);
-    this.name = "AuthError";
-    this.code = code;
-    this.status = status;
-  }
-}
-
+// Axios instance configuration
 const api = axios.create({
   baseURL: API_BASE,
   timeout: 10000,
@@ -35,33 +25,6 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
-// Helper: extract meaningful error message
-const extractErrorMessage = (error: AxiosError<any> | any): string => {
-  if (error instanceof AuthError) return error.message;
-
-  if (axios.isAxiosError(error)) {
-    const axiosError = error as AxiosError<{ message?: string; error?: string }>;
-
-    // Server responded with error status (4xx, 5xx)
-    if (axiosError.response?.data) {
-      return (
-        axiosError.response.data.message ||
-        axiosError.response.data.error ||
-        `Server error: ${axiosError.response.status}`
-      );
-    }
-
-    // Network error or no response
-    if (axiosError.message === "Network Error") {
-      return "No internet connection. Please check your network.";
-    }
-
-    return axiosError.message || "Request failed";
-  }
-
-  return error?.message || "An unexpected error occurred";
-};
-
 // Helper: save token
 const saveToken = async (token: string) => {
   try {
@@ -69,7 +32,7 @@ const saveToken = async (token: string) => {
     localStorage.setItem(TOKEN_KEY, token);
   } catch (err) {
     console.error("Failed to save auth token", err);
-    throw new AuthError("Failed to save login session", "STORAGE_ERROR");
+    throw new AppError("Failed to save login session", "STORAGE_ERROR");
   }
 };
 
@@ -81,17 +44,6 @@ export const removeToken = async () => {
     console.error("Failed to remove token", err);
   }
 };
-
-// User type
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-  isVerified: boolean;
-  avatar?: string;
-  name?: string;
-  token?: string;
-}
 
 
 // ============== SIGN UP ==============
@@ -119,11 +71,11 @@ export const signUp = async (
     // Handle specific known errors
     if (axios.isAxiosError(error) && error.response) {
       const status = error.response.status;
-      if (status === 400) throw new AuthError(message || "Invalid signup data", "VALIDATION_ERROR", status);
-      if (status === 409) throw new AuthError("Email or username already exists", "ALREADY_EXISTS", status);
-      throw new AuthError(message, "SIGNUP_FAILED");
+      if (status === 400) throw new AppError(message || "Invalid signup data", "VALIDATION_ERROR", status);
+      if (status === 409) throw new AppError("Email or username already exists", "ALREADY_EXISTS", status);
+      throw new AppError(message, "SIGNUP_FAILED");
     }
-    throw new AuthError(message, "SIGNUP_FAILED");
+    throw new AppError(message, "SIGNUP_FAILED");
   }
 };
 
@@ -142,11 +94,11 @@ export const verifyCode = async (code: string): Promise<{ message: string }> => 
 
     if (axios.isAxiosError(error) && error.response) {
       const status = error.response.status;
-      if (status === 400) throw new AuthError("Invalid or expired code", "INVALID_CODE", status);
-      if (status === 410) throw new AuthError("Verification code expired", "CODE_EXPIRED", status);
+      if (status === 400) throw new AppError("Invalid or expired code", "INVALID_CODE", status);
+      if (status === 410) throw new AppError("Verification code expired", "CODE_EXPIRED", status);
     }
 
-    throw new AuthError(message || "Failed to verify code", "VERIFICATION_FAILED");
+    throw new AppError(message || "Failed to verify code", "VERIFICATION_FAILED");
   }
 };
 
@@ -158,7 +110,7 @@ export const resendCode = async (): Promise<{ message: string }> => {
     return res.data;
   } catch (error: any) {
     const message = extractErrorMessage(error);
-    throw new AuthError(message || "Failed to resend code", "RESEND_FAILED");
+    throw new AppError(message || "Failed to resend code", "RESEND_FAILED");
   }
 };
 
@@ -174,38 +126,38 @@ export const signIn = async (login: string, password: string): Promise<User> => 
 
     const token = res.data.token;
     if (!token) {
-      throw new AuthError("Login succeeded but no token received", "NO_TOKEN");
+      throw new AppError("Login succeeded but no token received", "NO_TOKEN");
     }
 
     await saveToken(token);
 
     // Check verification status
     if (!res.data.user.isVerified) {
-      throw new AuthError("Please verify your email before logging in", "EMAIL_NOT_VERIFIED");
+      throw new AppError("Please verify your email before logging in", "EMAIL_NOT_VERIFIED");
     }
 
     return res.data.user;
   } catch (error: any) {
 
     console.log(error)
-    if (error instanceof AuthError) throw error; // Re-throw known auth errors
+    if (error instanceof AppError) throw error; // Re-throw known auth errors
 
     const message = extractErrorMessage(error);
 
     if (axios.isAxiosError(error) && error.response) {
       const status = error.response.status;
       if (status === 401) {
-        throw new AuthError("Invalid email/username or password", "INVALID_CREDENTIALS", status);
+        throw new AppError("Invalid email/username or password", "INVALID_CREDENTIALS", status);
       }
       if (status === 403) {
-        throw new AuthError("Please verify your email first", "EMAIL_NOT_VERIFIED", status);
+        throw new AppError("Please verify your email first", "EMAIL_NOT_VERIFIED", status);
       }
       if (status === 429) {
-        throw new AuthError("Too many attempts. Try again later.", "RATE_LIMITED", status);
+        throw new AppError("Too many attempts. Try again later.", "RATE_LIMITED", status);
       }
     }
 
-    throw new AuthError(message || "Login failed", "LOGIN_FAILED");
+    throw new AppError(message || "Login failed", "LOGIN_FAILED");
   }
 };
 
@@ -224,7 +176,7 @@ export const getCurrentUser = async (): Promise<User | null> => {
       const status = error.response.status;
       if (status === 401 || status === 403) {
         await removeToken();
-        throw new AuthError("Session expired. Please log in again", "UNAUTHORIZED", status);
+        throw new AppError("Session expired. Please log in again", "UNAUTHORIZED", status);
       }
     }
     // For other errors (network, etc.), don't log out, just return null

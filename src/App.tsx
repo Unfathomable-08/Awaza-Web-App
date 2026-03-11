@@ -36,7 +36,7 @@ const AppRoutes = () => {
       <Route path="/home" element={user ? <Home /> : <Navigate to="/welcome" replace />} />
       <Route path="/post/:id" element={user ? <PostDetails /> : <Navigate to="/login" replace />} />
       <Route path="/comment/:id" element={user ? <CommentDetails /> : <Navigate to="/login" replace />} />
-      <Route path="/profile/:userId" element={user ? <Profile /> : <Navigate to="/login" replace />} />
+      <Route path="/profile/:username" element={user ? <Profile /> : <Navigate to="/login" replace />} />
       <Route path="/compose-post" element={user ? <ComposePost /> : <Navigate to="/login" replace />} />
       <Route path="/inbox" element={user ? <Inbox /> : <Navigate to="/login" replace />} />
       <Route path="/chat/:username" element={user ? <Chat /> : <Navigate to="/login" replace />} />

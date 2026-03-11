@@ -104,7 +104,7 @@ const PostItem: React.FC<PostItemProps> = ({ item, currentUser, index = 0 }) => 
                     <Avatar
                         size={40}
                         uri={item?.user?.avatar}
-                        onClick={() => navigate(`/profile/${item?.user?._id || item?.user?.id}`)}
+                        onClick={() => navigate(`/profile/${item?.user?.username}`)}
                     />
 
                     <div className="flex flex-col">
@@ -113,21 +113,27 @@ const PostItem: React.FC<PostItemProps> = ({ item, currentUser, index = 0 }) => 
                             className="
                                 font-outfit font-bold text-[15px]
                                 tracking-tight leading-tight
-                                text-app hover:text-primary transition-colors
+                                text-app hover:underline transition-colors
                                 cursor-pointer
                             "
                             onClick={(e) => {
                                 e.stopPropagation();
-                                navigate(`/profile/${item?.user?._id || item?.user?.id}`);
+                                navigate(`/profile/${item?.user?.username}`);
                             }}
                         >
                             {item?.user?.name}
                         </span>
 
-                        {/* Relative timestamp */}
-                        <span className="text-[12px] font-medium text-muted">
-                            {createdAt}
-                        </span>
+                        {/* Relative timestamp & handle */}
+                        <div className="flex items-center gap-1.5">
+                            <span className="text-[13.5px] font-medium text-muted">
+                                @{item?.user?.username}
+                            </span>
+                            <span className="text-[13px] text-muted opacity-60">·</span>
+                            <span className="text-[13px] font-medium text-muted">
+                                {createdAt}
+                            </span>
+                        </div>
                     </div>
                 </div>
 
