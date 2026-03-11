@@ -54,4 +54,7 @@ export type LoadFeedParams = {
   cursor?: string | null;
   setCursor?: (val: string | null) => void;
   setPosts: (updater: any) => void;
+  isProfile?: boolean;
+  username?: string;
+  setTotalPosts?: (val: number) => void;
 };

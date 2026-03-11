@@ -1,4 +1,4 @@
-import { getFeed } from "./post";
+import { getFeed, getPostsByUser } from "./post";
 import type { LoadFeedParams } from "../types";
 
 export const loadFeed = async ({
@@ -12,6 +12,9 @@ export const loadFeed = async ({
   cursor,
   setCursor,
   setPosts,
+  isProfile = false,
+  username,
+  setTotalPosts,
 }: LoadFeedParams) => {
 
   if (loading || (!isLoadMore && refreshing)) return;
@@ -21,13 +24,23 @@ export const loadFeed = async ({
   else setRefreshing(true);
 
   try {
-    const data = await getFeed(isLoadMore ? cursor ?? undefined : undefined);
-    if (!data) return;
+    let data;
+    if (!isProfile){
+      data = await getFeed(isLoadMore ? cursor ?? undefined : undefined);
+      if (!data) return;
+    } else {
+      data = await getPostsByUser(username!, isLoadMore ? cursor ?? undefined : undefined);
+      if (!data) return;
+    }
 
     if (isLoadMore) {
       setPosts((prev: any[]) => [...prev, ...data.posts]);
     } else {
       setPosts(data.posts);
+    }
+
+    if (isProfile && setTotalPosts){
+      setTotalPosts(data.totalPosts);
     }
 
     if (setCursor) setCursor(data.nextCursor);

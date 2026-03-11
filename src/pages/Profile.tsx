@@ -1,4 +1,4 @@
-import { Mail, Calendar, MapPin, Link as LinkIcon } from 'lucide-react';
+import { Mail } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Avatar from '../components/Avatar';
@@ -20,6 +20,7 @@ const Profile: React.FC = () => {
     const [hasMore, setHasMore] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [cursor, setCursor] = useState<string | null>(null);
+    const [totalPosts, setTotalPosts] = useState(0);
 
     useEffect(() => {
         if (username) {
@@ -35,7 +36,10 @@ const Profile: React.FC = () => {
                 setHasMore,
                 cursor,
                 setCursor,
+                setTotalPosts,
                 setPosts,
+                isProfile: true,
+                username: username,
             });
         }
     }, [username]);
@@ -52,9 +56,9 @@ const Profile: React.FC = () => {
                 username: username,
                 avatar: profile?.avatar,
                 banner: 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=2029&auto=format&fit=crop', 
-                // bio: profile?.bio,
-                // followersCount: profile?.followersCount,
-                // followingCount: profile?.followingCount,
+                bio: profile?.bio,
+                followersCount: profile?.followersCount,
+                followingCount: profile?.followingCount,
             });
         } catch (e) {
             console.error(e);
@@ -119,25 +123,6 @@ const Profile: React.FC = () => {
 
                         <p className="mt-3 text-[15px] leading-normal">{profile?.bio}</p>
 
-                        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3">
-                            {profile?.location && (
-                                <div className="flex items-center gap-1 text-gray-500 text-[14px]">
-                                    <MapPin size={16} />
-                                    <span>{profile.location}</span>
-                                </div>
-                            )}
-                            {profile?.website && (
-                                <a href={profile.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary text-[14px] hover:underline">
-                                    <LinkIcon size={16} />
-                                    <span>{profile.website.replace('https://', '')}</span>
-                                </a>
-                            )}
-                            <div className="flex items-center gap-1 text-gray-500 text-[14px]">
-                                <Calendar size={16} />
-                                <span>{profile?.joinedDate}</span>
-                            </div>
-                        </div>
-
                         <div className="flex gap-4 mt-3">
                             <button className="hover:underline">
                                 <span className="font-bold text-[14px]">{profile?.followingCount}</span>
@@ -151,14 +136,15 @@ const Profile: React.FC = () => {
                     </div>
 
                     {/* Tabs */}
-                    <div className="flex justify-start border-b border-gray-100 my-4">
+                    <div className="flex justify-start border-b border-gray-100 mb-4">
                         {['Posts', 'Replies', 'Likes'].map((tab, i) => (
                             <button 
                                 key={tab} 
                                 className={`px-4 py-2 text-[15px] font-bold hover:bg-black/5 transition-colors relative ${i === 0 ? '' : 'text-gray-500'}`}
                             >
                                 {tab}
-                                {i === 0 && <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-14 h-1 bg-primary rounded-full" />}
+                                {tab == 'Posts' && <span className='text-gray-400 text-xs ps-2'>{totalPosts}</span>}
+                                {i === 0 && <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-18 h-[3px] bg-primary rounded-full" />}
                             </button>
                         ))}
                     </div>
