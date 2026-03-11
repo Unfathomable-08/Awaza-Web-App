@@ -216,10 +216,10 @@ const PostDetails: React.FC = () => {
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.4 }}
                     onClick={() => navigate(`/comment/${postId}`)}
-                    className="fixed bottom-6 right-4 w-14 h-14 rounded-2xl flex items-center justify-center text-white z-50 shadow-premium active:brightness-90 transition-all"
+                    className="fixed bottom-18 right-4 w-14 h-14 rounded-2xl flex items-center justify-center text-white z-50 shadow-premium active:brightness-90 transition-all"
                     style={{ backgroundColor: 'var(--color-primary)' }}
                 >
-                    <MessageSquare size={22} fill="currentColor" />
+                    <MessageSquare size={26} fill="currentColor" />
                 </motion.button >
             </div >
         </ScreenWrapper >

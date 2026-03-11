@@ -91,7 +91,7 @@ const Home: React.FC = () => {
                         onClick={() => navigate('/compose-post')}
                         aria-label="Compose new post"
                         className="
-                            fixed bottom-6 right-4 z-40
+                            fixed bottom-18 right-4 z-40
                             w-14 h-14 rounded-full
                             flex items-center justify-center
                             text-white bg-primary

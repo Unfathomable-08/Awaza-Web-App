@@ -112,7 +112,7 @@ const Profile: React.FC = () => {
                             <div className="transform translate-y-2">
                                 {isOwnProfile ? (
                                     <button 
-                                        onClick={() => navigate('/update-profile')}
+                                        onClick={() => navigate('/profile')}
                                         className="px-4 h-8 rounded-full border border-gray-700 font-bold text-[14px] hover:bg-gray-50 transition-colors"
                                     >
                                         Edit profile

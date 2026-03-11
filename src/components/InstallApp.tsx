@@ -65,7 +65,7 @@ export function InstallApp() {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          className="fixed w-[80vw] sm:w-[60vw] px-4 py-3 bottom-12 left-1 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-lg shadow-lg flex items-center justify-between"
+          className="fixed w-[80vw] sm:w-[60vw] px-4 py-3 bottom-20 left-1 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-lg shadow-lg flex items-center justify-between"
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 100 }}
