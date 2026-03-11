@@ -14,6 +14,8 @@ import Signup from './pages/Signup';
 import UpdateProfile from './pages/UpdateProfile';
 import UpdateUsername from './pages/UpdateUsername';
 import Welcome from './pages/Welcome';
+import Notifications from './pages/Notifications';
+import BottomNav from './components/BottomNav';
 
 const AppRoutes = () => {
   const { user, isLoading } = useAuth();
@@ -34,6 +36,7 @@ const AppRoutes = () => {
       <Route path="/signup" element={<Signup />} />
       <Route path="/check-email" element={<CheckEmail />} />
       <Route path="/home" element={user ? <Home /> : <Navigate to="/welcome" replace />} />
+      <Route path="/notifications" element={user ? <Notifications /> : <Navigate to="/login" replace />} />
       <Route path="/post/:id" element={user ? <PostDetails /> : <Navigate to="/login" replace />} />
       <Route path="/comment/:id" element={user ? <CommentDetails /> : <Navigate to="/login" replace />} />
       <Route path="/profile/:username" element={user ? <Profile /> : <Navigate to="/login" replace />} />
@@ -51,7 +54,10 @@ function App() {
   return (
     <Router>
       <AuthProvider>
-        <AppRoutes />
+        <div className="pb-16 flex flex-col min-h-screen">
+          <AppRoutes />
+          <BottomNav />
+        </div>
       </AuthProvider>
     </Router>
   );

@@ -13,8 +13,6 @@
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { RiMailSendFill } from "react-icons/ri";
-import { FaUserEdit } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import Feed from '../components/Feed';
 import Header from '../components/Header';
@@ -69,25 +67,7 @@ const Home: React.FC = () => {
                             Awaza
                         </h1>
                     }
-                    rightElement={
-                        /* Inbox shortcut icon */
-                        <div className="flex items-center gap-0.5">
-                            <button
-                                onClick={() => navigate('/profile')}
-                                aria-label="Profile"
-                                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 active:scale-90 transition-all"
-                            >
-                                <FaUserEdit className="text-primary" size={24} />
-                            </button>
-                            <button
-                                onClick={() => navigate('/inbox')}
-                                aria-label="Messages"
-                                className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-black/5 active:scale-90 transition-all"
-                            >
-                                <RiMailSendFill className="text-primary" size={24} />
-                            </button>
-                        </div>
-                    }
+
                 />
 
                 {/* ── Feed ── */}
