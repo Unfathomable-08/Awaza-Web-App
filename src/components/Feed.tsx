@@ -19,6 +19,8 @@ interface FeedProps {
     loading?: boolean;
     /** The authenticated user passed through to PostItem for liked state */
     user?: any;
+    /** Optional callback when a post is deleted */
+    onDelete?: (postId: string) => void;
 }
 
 /**
@@ -27,7 +29,7 @@ interface FeedProps {
  * Uses `no-scrollbar` to hide the native scrollbar on all platforms while
  * floating action button so the last post is always reachable.
  */
-const Feed: React.FC<FeedProps> = ({ data, loading = false, user }) => {
+const Feed: React.FC<FeedProps> = ({ data, loading = false, user, onDelete }) => {
     const isEmpty = data.length === 0 && !loading;
 
     return (
@@ -59,6 +61,7 @@ const Feed: React.FC<FeedProps> = ({ data, loading = false, user }) => {
                         item={item}
                         currentUser={user}
                         index={index}
+                        onDelete={onDelete}
                     />
                 ))}
             </div>

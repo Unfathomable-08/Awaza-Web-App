@@ -38,6 +38,11 @@ const Home: React.FC = () => {
     const [cursor, setCursor] = useState<string | null>(null);
     const [page, setPage] = useState(1);
 
+    /** Remove the deleted post from the timeline without full refresh */
+    const handleDeletePost = (postId: string) => {
+        setPosts((prevPosts) => prevPosts.filter((p) => (p?._id || p?.id) !== postId));
+    };
+
     /** Load the initial page of posts on mount */
     useEffect(() => {
         if (loading || !hasMore || refreshing) return;
@@ -78,7 +83,7 @@ const Home: React.FC = () => {
                         transition={{ duration: 0.4 }}
                         className="h-full"
                     >
-                        <Feed data={posts} loading={loading} user={user} />
+                        <Feed data={posts} loading={loading} user={user} onDelete={handleDeletePost} />
                     </motion.div>
 
                     {/* ── Floating action button (compose post) ── */}

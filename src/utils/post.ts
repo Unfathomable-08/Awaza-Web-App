@@ -137,3 +137,15 @@ export const getPost = async (postId: string) => {
     handleApiError(error, 'FETCH_POST_FAILED');
   }
 }
+
+// ========== Delete Post ==========
+export const deletePost = async (postId: string) => {
+  try {
+    const res = await api.delete(`/${postId}`);
+    console.log('Delete post response:', res.data);
+    return res.data;
+  } catch (error: any) {
+    console.error('Error deleting post:', error);
+    handleApiError(error, 'DELETE_POST_FAILED');
+  }
+};

@@ -12,10 +12,11 @@
  */
 
 import { motion } from 'framer-motion';
-import { Heart, MessageCircle, MoreHorizontal, Share2 } from 'lucide-react';
-import React, { memo, useEffect, useState } from 'react';
+import { Heart, MessageCircle, MoreHorizontal, Share2, Trash2 } from 'lucide-react';
+import React, { memo, useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { likePost } from '../utils/actions';
+import { deletePost } from '../utils/post';
 import { timeAgo } from '../utils/common';
 import Avatar from './Avatar';
 
@@ -27,6 +28,8 @@ interface PostItemProps {
     currentUser?: any;
     /** Stagger index used to delay the entrance animation */
     index?: number;
+    /** Optional callback when the post is deleted */
+    onDelete?: (postId: string) => void;
 }
 
 /**
@@ -36,12 +39,14 @@ interface PostItemProps {
  * to the post detail page.  The like button performs an optimistic update —
  * UI changes instantly and reverts on API error.
  */
-const PostItem: React.FC<PostItemProps> = ({ item, currentUser, index = 0 }) => {
+const PostItem: React.FC<PostItemProps> = ({ item, currentUser, index = 0, onDelete }) => {
     const navigate = useNavigate();
 
     // ── Local interaction state ──────────────────────────────────────────
     const [liked, setLiked] = useState(false);
     const [likesCount, setLikesCount] = useState(0);
+    const [showMenu, setShowMenu] = useState(false);
+    const menuRef = useRef<HTMLDivElement>(null);
 
     /** Sync liked state from the post object */
     useEffect(() => {
@@ -82,6 +87,52 @@ const PostItem: React.FC<PostItemProps> = ({ item, currentUser, index = 0 }) => 
             setLikesCount(prev => !newLiked ? prev + 1 : prev - 1);
         }
     };
+
+    /** Toggle the options menu */
+    const toggleMenu = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setShowMenu(prev => !prev);
+    };
+
+    /** Handle post deletion */
+    const handleDelete = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        const postId = item?._id || item?.id;
+        
+        // Optimistically hide menu
+        setShowMenu(false);
+        
+        try {
+            await deletePost(postId);
+            if (onDelete) onDelete(postId);
+        } catch (error) {
+            console.error('Failed to delete post:', error);
+        }
+    };
+
+    /** Check if current user is the author of the post */
+    const isAuthor = currentUser && (
+        (item?.user?._id || item?.user?.id || item?.user) === (currentUser?._id || currentUser?.id)
+    );
+
+    /** Close menu when clicking outside */
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+                setShowMenu(false);
+            }
+        };
+
+        if (showMenu) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showMenu]);
 
     const createdAt = timeAgo(item?.createdAt || new Date().toISOString());
 
@@ -138,17 +189,48 @@ const PostItem: React.FC<PostItemProps> = ({ item, currentUser, index = 0 }) => 
                 </div>
 
                 {/* More options — stopPropagation so card click doesn't fire */}
-                <button
-                    className="
-                        w-8 h-8 flex items-center justify-center
-                        rounded-full hover:bg-black/5
-                        active:scale-90 transition-all
-                    "
-                    onClick={e => e.stopPropagation()}
-                    aria-label="More options"
-                >
-                    <MoreHorizontal size={18} className="text-muted" />
-                </button>
+                {isAuthor && (
+                    <div className="relative" ref={menuRef}>
+                        <button
+                            className={`
+                                w-8 h-8 flex items-center justify-center
+                                rounded-full hover:bg-black/5
+                                active:scale-90 transition-all
+                                ${showMenu ? 'bg-black/5' : ''}
+                            `}
+                            onClick={toggleMenu}
+                            aria-label="More options"
+                        >
+                            <MoreHorizontal size={18} className="text-muted" />
+                        </button>
+
+                        {/* Delete Chip/Menu */}
+                        {showMenu && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.9, y: -10 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                className="
+                                    absolute right-0 top-full z-20
+                                    bg-white shadow-lg border border-sep rounded-xl
+                                    overflow-hidden min-w-[100px]
+                                "
+                            >
+                                <button
+                                    onClick={handleDelete}
+                                    className="
+                                        flex flex-row items-center gap-2
+                                        w-full px-4 py-2 text-left
+                                        hover:bg-error-8 text-error
+                                        transition-colors font-outfit font-medium text-[14px]
+                                    "
+                                >
+                                    <Trash2 size={15} />
+                                    <span>Delete</span>
+                                </button>
+                            </motion.div>
+                        )}
+                    </div>
+                )}
             </div>
 
             {/* ── Post content ── */}

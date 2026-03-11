@@ -25,6 +25,12 @@ const Profile: React.FC = () => {
     const [isFollowingState, setIsFollowing] = useState(false);
     const [isFollowLoading, setIsFollowLoading] = useState(true);
 
+    /** Remove the deleted post from the timeline without full refresh */
+    const handleDeletePost = (postId: string) => {
+        setPosts((prevPosts) => prevPosts.filter((p) => (p?._id || p?.id) !== postId));
+        setTotalPosts((prev) => Math.max(0, prev - 1));
+    };
+
     useEffect(() => {
         if (username) {
             const checkFollowing = async () => {
@@ -179,7 +185,7 @@ const Profile: React.FC = () => {
 
                     {/* Feed */}
                     <div className="min-h-screen">
-                        <Feed data={posts} loading={feedLoading} user={user} />
+                        <Feed data={posts} loading={feedLoading} user={user} onDelete={handleDeletePost} />
                     </div>
                 </div>
             </div>
