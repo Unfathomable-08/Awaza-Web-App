@@ -7,6 +7,7 @@ import ScreenWrapper from '../components/ScreenWrapper';
 import { useAuth } from '../contexts/authContext';
 import { loadFeed } from '../utils/feed';
 import { getProfileInfo } from '../utils/getProfile';
+import { followUser, unfollowUser, isFollowing } from '../utils/follow';
 
 const Profile: React.FC = () => {
     const { username } = useParams();
@@ -21,6 +22,19 @@ const Profile: React.FC = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [cursor, setCursor] = useState<string | null>(null);
     const [totalPosts, setTotalPosts] = useState(0);
+    const [isFollowingState, setIsFollowing] = useState(false);
+    const [isFollowLoading, setIsFollowLoading] = useState(true);
+
+    useEffect(() => {
+        if (username) {
+            const checkFollowing = async () => {
+                const is = await isFollowing(username);
+                setIsFollowing(is);
+                setIsFollowLoading(false);
+            };
+            checkFollowing();
+        }
+    }, [username]);
 
     useEffect(() => {
         if (username) {
@@ -108,9 +122,23 @@ const Profile: React.FC = () => {
                                         <button className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-50 transition-colors">
                                             <Mail size={18} />
                                         </button>
-                                        <button className="px-5 h-8 rounded-full bg-black text-white font-bold text-[14px] hover:bg-black/90 transition-colors">
-                                            Follow
-                                        </button>
+                                        {
+                                            isFollowLoading 
+                                            ?
+                                            <span className="px-5 h-8 rounded-full bg-black text-white font-bold text-[14px] hover:bg-black/90 transition-colors">
+                                                Loading
+                                            </span>
+                                            :
+                                            isFollowingState 
+                                            ?
+                                            <button onClick={() => unfollowUser({userId: profile.id, setIsFollowing})} className="px-5 h-8 rounded-full border border-black font-bold text-[14px] hover:bg-black/90 transition-colors">
+                                                Following
+                                            </button>
+                                            :
+                                            <button onClick={() => followUser({userId: profile.id, setIsFollowing})} className="px-5 h-8 rounded-full bg-black text-white font-bold text-[14px] hover:bg-black/90 transition-colors">
+                                                Follow
+                                            </button>
+                                        }
                                     </div>
                                 )}
                             </div>
