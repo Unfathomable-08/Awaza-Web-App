@@ -12,9 +12,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'mask-icon.svg'],
       manifest: {
-        name: 'Awaza Web App',
+        name: 'Awaza Social Media',
         short_name: 'Awaza',
-        description: 'Awaza Social Media Web App',
+        description: 'Awaza Social Media',
         theme_color: '#ffffff',
         background_color: '#ffffff',
         display: 'standalone',
@@ -32,6 +32,6 @@ export default defineConfig({
           }
         ]
       }
-    })
+    }),
   ],
 })

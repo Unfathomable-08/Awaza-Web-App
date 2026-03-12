@@ -1,3 +1,7 @@
+import { useEffect } from 'react';
+import { requestNotificationPermission, messaging } from './lib/firebase';
+import { onMessage } from 'firebase/messaging';
+import { ToastProvider, notify } from './lib/toast';
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/authContext';
 import AccountSetting from './pages/AccountSetting';
@@ -19,6 +23,19 @@ import BottomNav from './components/BottomNav';
 
 const AppRoutes = () => {
   const { user, isLoading } = useAuth();
+
+  useEffect(() => {
+    requestNotificationPermission();
+
+    if (messaging) {
+      const unsubscribe = onMessage(messaging, (payload) => {
+        if (payload.notification?.title) {
+          notify.pushNotification(payload.notification.title, payload.notification.body);
+        }
+      });
+      return () => unsubscribe();
+    }
+  }, []);
 
   if (isLoading) {
     return (
@@ -57,6 +74,7 @@ function App() {
         <div className="pb-16 flex flex-col min-h-screen">
           <AppRoutes />
           <BottomNav />
+          <ToastProvider />
         </div>
       </AuthProvider>
     </Router>

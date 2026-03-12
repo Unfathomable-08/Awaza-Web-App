@@ -5,11 +5,11 @@ import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { getMessaging, getToken } from "firebase/messaging";
 
 let app: any = null;
 
-if (typeof window !== "undefined") {
-  const firebaseConfig = {
+export const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
     projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
@@ -20,6 +20,7 @@ if (typeof window !== "undefined") {
     databaseURL: "https://vibely-social-media-default-rtdb.asia-southeast1.firebasedatabase.app",
   };
 
+if (typeof window !== "undefined") {
   if (!getApps().length) {
     app = initializeApp(firebaseConfig);
   } else {
@@ -31,6 +32,7 @@ export const auth = app ? getAuth(app) : null;
 export const db = app ? getFirestore(app) : null;
 export const rtdb = app ? getDatabase(app) : null;
 export const storage = app ? getStorage(app) : null;
+export const messaging = app ? getMessaging(app) : null;
 
 // Function to get analytics safely
 export const getFirebaseAnalytics = async () => {
@@ -39,6 +41,21 @@ export const getFirebaseAnalytics = async () => {
     return getAnalytics(app);
   }
   return null;
+};
+
+export const requestNotificationPermission = async () => {
+  if (!messaging) return;
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      const token = await getToken(messaging, {
+        vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+      });
+      console.log("Notification permission granted", token);
+    }
+  } catch (error) {
+    console.error("Error requesting notification permission:", error);
+  }
 };
 
 export default app;
