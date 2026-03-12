@@ -29,14 +29,8 @@ const messaging = firebase.messaging();
 // Handle incoming messages
 messaging.onBackgroundMessage((payload) => {
   console.log("[firebase-messaging-sw.js] Received background message ", payload);
-  // Customize notification here
-  const notificationTitle = payload.notification?.title;
-  const notificationOptions = {
-    body: payload.notification?.body,
-    icon: "https://awaza-social.vercel.app/pwa-192x192.png",
-  };
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  // The Firebase SDK automatically displays the notification if the 'notification' object 
+  // is present in the payload. We do not need to call showNotification manually.
 });
 
 // Optional: Handle click
