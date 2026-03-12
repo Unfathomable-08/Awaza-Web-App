@@ -1,6 +1,7 @@
 import axios from "axios";
 import type { User } from "../types";
 import { AppError, extractErrorMessage } from "./errorHandling";
+import { removeFCMToken } from "./notifications";
 
 // const API_BASE = "http://localhost:5000/api/auth";
 const API_BASE = "https://social-media-app-backend-khaki.vercel.app/api/auth";
@@ -186,6 +187,16 @@ export const getCurrentUser = async (): Promise<User | null> => {
 
 // ============== LOGOUT ==============
 export const logOut = async () => {
+  try {
+    const fcmToken = localStorage.getItem('fcmToken');
+    if (fcmToken) {
+      await removeFCMToken(fcmToken);
+      localStorage.removeItem('fcmToken');
+      localStorage.removeItem('notificationsEnabled');
+    }
+  } catch (err) {
+    console.error("Failed to unregister FCM token during logout", err);
+  }
   await removeToken();
 };
 

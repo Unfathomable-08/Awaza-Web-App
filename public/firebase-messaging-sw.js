@@ -29,8 +29,14 @@ const messaging = firebase.messaging();
 // Handle incoming messages
 messaging.onBackgroundMessage((payload) => {
   console.log("[firebase-messaging-sw.js] Received background message ", payload);
-  // The Firebase SDK automatically displays the notification if the 'notification' object 
-  // is present in the payload. We do not need to call showNotification manually.
+  if (payload.data) {
+    const notificationTitle = payload.data.title || "New Notification";
+    const notificationOptions = {
+      body: payload.data.body,
+      icon: payload.data.icon || "/pwa-512x512.png",
+    };
+    self.registration.showNotification(notificationTitle, notificationOptions);
+  }
 });
 
 // Optional: Handle click

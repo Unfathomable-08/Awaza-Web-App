@@ -32,8 +32,10 @@ const AppRoutes = () => {
 
     if (messaging) {
       const unsubscribe = onMessage(messaging, (payload) => {
-        if (payload.notification?.title) {
-          notify.pushNotification(payload.notification.title, payload.notification.body);
+        const title = payload.notification?.title || payload.data?.title;
+        const body = payload.notification?.body || payload.data?.body;
+        if (title) {
+          notify.pushNotification(title, body);
         }
       });
       return () => unsubscribe();
