@@ -11,6 +11,7 @@ import { rtdb } from '../lib/firebase';
 import { timeAgo } from '../utils/common';
 import { createChatsMetadata } from '../utils/inbox';
 import { searchUserByID } from '../utils/search';
+import { sendPushNotification } from '../utils/notifications';
 
 const Chat: React.FC = () => {
     const { username } = useParams<{ username: string }>();
@@ -60,6 +61,11 @@ const Chat: React.FC = () => {
             const messagesRef = ref(rtdb, `chats/${username}`);
             const newMsgRef = push(messagesRef);
             await set(newMsgRef, { text, userId: user.id, userEmail: user.email, createdAt: Date.now() });
+            
+            // Trigger push notification to otherUser
+            if (otherUser && otherUser._id) {
+                sendPushNotification(otherUser._id, user.name || user.username, text).catch(e => console.error("Push notification failed", e));
+            }
         } catch (e) { console.error(e); }
     };
 

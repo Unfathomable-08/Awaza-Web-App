@@ -43,8 +43,8 @@ export const getFirebaseAnalytics = async () => {
   return null;
 };
 
-export const requestNotificationPermission = async () => {
-  if (!messaging) return;
+export const requestNotificationPermission = async (): Promise<string | null> => {
+  if (!messaging) return null;
   try {
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
@@ -52,10 +52,12 @@ export const requestNotificationPermission = async () => {
         vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
       });
       console.log("Notification permission granted", token);
+      return token;
     }
   } catch (error) {
     console.error("Error requesting notification permission:", error);
   }
+  return null;
 };
 
 export default app;

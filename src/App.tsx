@@ -25,7 +25,10 @@ const AppRoutes = () => {
   const { user, isLoading } = useAuth();
 
   useEffect(() => {
-    requestNotificationPermission();
+    const isEnabled = localStorage.getItem('notificationsEnabled');
+    if (isEnabled === 'true') {
+      requestNotificationPermission();
+    }
 
     if (messaging) {
       const unsubscribe = onMessage(messaging, (payload) => {
