@@ -43,6 +43,21 @@ export interface Comment {
   parentId?: string;
 }
 
+export type NotificationType = "like" | "comment" | "follow" | "mention" | "message" | "post" | "other";
+
+export interface Notification {
+  _id: string;
+  userId: string;
+  type: NotificationType;
+  read: boolean;
+  postId?: string | any;
+  likedBy?: User | string;
+  commentedBy?: User | string;
+  followedBy?: User | string;
+  content?: string;
+  createdAt: string;
+}
+
 export type LoadFeedParams = {
   isLoadMore?: boolean;
   loading: boolean;
