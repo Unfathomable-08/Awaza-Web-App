@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { likePost } from '../utils/actions';
 import { deletePost } from '../utils/post';
 import { timeAgo } from '../utils/common';
+import { sendPushNotification } from '../utils/notifications';
 import Avatar from './Avatar';
 
 /** Props for the PostItem component */
@@ -81,6 +82,14 @@ const PostItem: React.FC<PostItemProps> = ({ item, currentUser, index = 0, onDel
 
         try {
             await likePost(item?._id || item?.id);
+            // Trigger push notification if liked (not unliked) and not our own post
+            if (newLiked && currentUser && (item?.user?._id || item?.user?.id) !== (currentUser?._id || currentUser?.id)) {
+                sendPushNotification(
+                    item?.user?._id || item?.user?.id,
+                    `${currentUser.name || currentUser.username} liked your post`,
+                    item.content ? (item.content.length > 50 ? item.content.substring(0, 50) + '...' : item.content) : 'Liked your post'
+                ).catch(err => console.error("Push notification error:", err));
+            }
         } catch {
             // Roll back on failure
             setLiked(!newLiked);

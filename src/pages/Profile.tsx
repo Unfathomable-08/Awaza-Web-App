@@ -8,6 +8,7 @@ import { useAuth } from '../contexts/authContext';
 import { loadFeed } from '../utils/feed';
 import { getProfileInfo } from '../utils/getProfile';
 import { followUser, unfollowUser, isFollowing } from '../utils/follow';
+import { sendPushNotification } from '../utils/notifications';
 
 const Profile: React.FC = () => {
     const { username } = useParams();
@@ -141,7 +142,19 @@ const Profile: React.FC = () => {
                                                 Following
                                             </button>
                                             :
-                                            <button onClick={() => followUser({userId: profile.id, setIsFollowing})} className="px-5 h-8 rounded-full bg-black text-white font-bold text-[14px] hover:bg-black/90 transition-colors">
+                                            <button 
+                                                onClick={async () => {
+                                                    await followUser({userId: profile.id, setIsFollowing});
+                                                    if (user) {
+                                                        sendPushNotification(
+                                                            profile.id,
+                                                            "New Follower",
+                                                            `${user.name || user.username} started following you`
+                                                        ).catch(err => console.error("Push notification error:", err));
+                                                    }
+                                                }} 
+                                                className="px-5 h-8 rounded-full bg-black text-white font-bold text-[14px] hover:bg-black/90 transition-colors"
+                                            >
                                                 Follow
                                             </button>
                                         }

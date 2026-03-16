@@ -23,6 +23,7 @@ import { getComments, likePost } from '../utils/actions';
 import { buildCommentTree } from '../utils/buildCommentTree';
 import { timeAgo } from '../utils/common';
 import { getPost } from '../utils/post';
+import { sendPushNotification } from '../utils/notifications';
 
 /**
  * PostDetails
@@ -67,7 +68,17 @@ const PostDetails: React.FC = () => {
             likes: alreadyLiked ? p.likes.filter((l: string) => l !== userId) : [...(p.likes || []), userId],
             likesCount: alreadyLiked ? p.likesCount - 1 : p.likesCount + 1,
         }));
-        try { await likePost(postId!); } catch (err) { console.error(err); }
+        try { 
+            await likePost(postId!); 
+            // Trigger push notification if liked (not unliked) and not our own post
+            if (!alreadyLiked && user && (post.user?._id || post.user?.id) !== (user?.id)) {
+                sendPushNotification(
+                    post.user?._id || post.user?.id,
+                    `${user.name || user.username} liked your post`,
+                    post.content ? (post.content.length > 50 ? post.content.substring(0, 50) + '...' : post.content) : 'Liked your post'
+                ).catch(err => console.error("Push notification error:", err));
+            }
+        } catch (err) { console.error(err); }
     };
 
     // ── Render Helpers ───────────────────────────────────────────────────
@@ -215,7 +226,13 @@ const PostDetails: React.FC = () => {
                     initial={{ scale: 0, opacity: 0, y: 40 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.4 }}
-                    onClick={() => navigate(`/comment/${postId}`)}
+                    onClick={() => navigate(`/comment/${postId}`, { 
+                        state: { 
+                            recipientId: post.user?._id || post.user?.id, 
+                            recipientName: post.user?.name,
+                            type: 'comment'
+                        } 
+                    })}
                     className="fixed bottom-18 right-4 w-14 h-14 rounded-2xl flex items-center justify-center text-white z-50 shadow-premium active:brightness-90 transition-all"
                     style={{ backgroundColor: 'var(--color-primary)' }}
                 >

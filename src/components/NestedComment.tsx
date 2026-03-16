@@ -17,6 +17,8 @@ import { Heart, MessageSquare } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { timeAgo } from '../utils/common';
+import { likeComment } from '../utils/actions';
+import { sendPushNotification } from '../utils/notifications';
 import Avatar from './Avatar';
 
 /** Props for the NestedComment component */
@@ -63,10 +65,28 @@ export const NestedComment: React.FC<NestedCommentProps> = ({
      * Optimistic like toggle.
      * TODO: wire up the real like-comment API call here.
      */
-    const handleLike = (e: React.MouseEvent) => {
+    const handleLike = async (e: React.MouseEvent) => {
         e.stopPropagation();
-        setLiked((prev: boolean) => !prev);
-        setLikesCount((prev: number) => liked ? prev - 1 : prev + 1);
+        const newLiked = !liked;
+        setLiked(newLiked);
+        setLikesCount((prev: number) => newLiked ? prev + 1 : prev - 1);
+
+        try {
+            await likeComment(postId, comment._id);
+            // Trigger push notification if liked and not our own comment
+            if (newLiked && currentUserId && (comment.user?._id || comment.user?.id) !== currentUserId) {
+                sendPushNotification(
+                    comment.user?._id || comment.user?.id,
+                    "Comment Liked",
+                    `${comment.content.substring(0, 30)}${comment.content.length > 30 ? '...' : ''}`
+                ).catch(err => console.error("Push notification error:", err));
+            }
+        } catch (err) {
+            console.error(err);
+            // Rollback
+            setLiked(!newLiked);
+            setLikesCount((prev: number) => !newLiked ? prev + 1 : prev - 1);
+        }
     };
 
     return (
@@ -157,7 +177,13 @@ export const NestedComment: React.FC<NestedCommentProps> = ({
 
                         {/* Reply — navigates to CommentDetails */}
                         <button
-                            onClick={() => navigate(`/comment/${postId}_${comment._id}`)}
+                        onClick={() => navigate(`/comment/${postId}_${comment._id}`, { 
+                            state: { 
+                                recipientId: comment.user?._id || comment.user?.id, 
+                                recipientName: comment.user?.name,
+                                type: 'reply'
+                            } 
+                        })}
                             className="flex flex-row items-center gap-1.5 outline-none"
                             aria-label="Reply to comment"
                         >

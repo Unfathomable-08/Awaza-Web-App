@@ -49,3 +49,12 @@ export const getComments = async (postId: string) => {
         throw error;
     }
 };
+export const likeComment = async (postId: string, commentId: string) => {
+    try {
+        const res = await api.post(`/posts/${postId}/comments/${commentId}/like`);
+        return res.data;
+    } catch (error: any) {
+        console.error('Error liking comment:', error);
+        throw error;
+    }
+};

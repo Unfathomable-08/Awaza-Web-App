@@ -10,13 +10,14 @@
 
 import { motion } from 'framer-motion';
 import React, { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import Avatar from '../components/Avatar';
 import Button from '../components/Button';
 import Header from '../components/Header';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { useAuth } from '../contexts/authContext';
 import { createComment } from '../utils/actions';
+import { sendPushNotification } from '../utils/notifications';
 
 const MAX_CHARS = 380;
 
@@ -29,6 +30,7 @@ const CommentDetails: React.FC = () => {
     // ── Routing & Auth State ──────────────────────────────────────────────
     const { id } = useParams();
     const navigate = useNavigate();
+    const { state } = useLocation();
     const { user } = useAuth();
     
     // ── Form State ───────────────────────────────────────────────────────
@@ -45,7 +47,20 @@ const CommentDetails: React.FC = () => {
     const handlePost = async () => {
         if (isDisabled || !postId) return;
         setLoading(true);
-        try { await createComment(postId, text.trim(), parentCommentId); navigate(-1); }
+        try { 
+            await createComment(postId, text.trim(), parentCommentId); 
+            
+            // Trigger push notification if recipient is known and not ourselves
+            const { recipientId, type } = state || {};
+            if (recipientId && recipientId !== (user?.id)) {
+                const title = type === 'reply' ? 'New Reply' : 'New Comment';
+                const body = `${user?.name || user?.username} ${type === 'reply' ? 'replied to you' : 'commented on your post'}: "${text.trim().length > 30 ? text.trim().substring(0, 30) + '...' : text.trim()}"`;
+                
+                sendPushNotification(recipientId, title, body).catch(err => console.error("Push notification error:", err));
+            }
+
+            navigate(-1); 
+        }
         catch (error: any) { console.error(error); }
         finally { setLoading(false); }
     };
