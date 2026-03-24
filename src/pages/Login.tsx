@@ -14,7 +14,6 @@ import { Lock, Mail } from 'lucide-react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
-import Header from '../components/Header';
 import Input from '../components/Input';
 import ScreenWrapper from '../components/ScreenWrapper';
 import { signIn } from '../utils/auth';
@@ -63,10 +62,7 @@ const Login: React.FC = () => {
 
     return (
         <ScreenWrapper>
-            {/* Transparent header so the page gradient shows through */}
-            <Header transparent showBackButton />
-
-            <div className="flex flex-col flex-1 px-6 pt-2 pb-10 overflow-y-auto no-scrollbar">
+            <div className="flex flex-col flex-1 px-6 pt-2 pb-10 h-svh overflow-y-hidden no-scrollbar">
                 <motion.div
                     initial={{ opacity: 0, y: 24 }}
                     animate={{ opacity: 1, y: 0 }}
